@@ -57,9 +57,21 @@ const Verifycode = () => {
 
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
-        const code = otp.join("");
-        if (code.length === 6 && email) {
-            await verifyCode(code, email);
+        const codeString = otp.join("");
+        const codeNum = Number(codeString);
+        if (codeString.length === 6 && !isNaN(codeNum) && email) {
+            const data = await verifyCode(codeNum, email);
+            console.log("Verifycode - API Response data:", data);
+            console.log("Verifycode - resetToken:", data?.resetToken);
+            if (data?.resetToken) {
+                // Store resetToken in localStorage or searchParams for NextPassword
+                localStorage.setItem('resetToken', data.resetToken);
+                const redirectUrl = `/newpassword?email=${encodeURIComponent(email)}&resetToken=${encodeURIComponent(data.resetToken)}`;
+                console.log("Verifycode - Redirecting to:", redirectUrl);
+                router.push(redirectUrl);
+            } else {
+                console.error("Verifycode - No resetToken in response!");
+            }
         }
     };
 
@@ -71,14 +83,11 @@ const Verifycode = () => {
         setTimer(60);
     };
 
-    useEffect(() => {
-        if (success) {
-            router.push(`/newpassword?email=${encodeURIComponent(email)}`);
-        }
-    }, [success, router, email]);
+    // Remove the automatic redirect useEffect since we handle it in handleVerify
+
     return (
         <div className="min-h-screen flex items-center justify-center  px-4">
-            <div className=" max-w-3xl bg-white rounded-xl shadow-md px-10 py-12">
+            <div className="w-full bg-black/40  rounded-xl shadow-md px-10 py-12">
 
                 {/* Logo */}
                 <div className="flex justify-center mb-6">
@@ -95,7 +104,7 @@ const Verifycode = () => {
                 <h2 className="text-center text-2xl font-semibold text-orange-500 mb-1">
                     Verify Your Account
                 </h2>
-                <p className="text-center text-sm text-gray-500 mb-8">
+                <p className="text-center text-sm text-white mb-8">
                     Enter the 6-digit code sent to your email to continue.
                 </p>
 

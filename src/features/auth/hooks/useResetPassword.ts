@@ -9,12 +9,19 @@ export function useResetPassword() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
 
-    const handleResetPassword = async (data: { email: string; newPassword: string }) => {
+    const handleResetPassword = async (data: { email: string; newPassword: string; confirmPassword: string; resetToken: string | null }) => {
+        console.log("=== useResetPassword handleResetPassword ===");
+        console.log("Data:", data);
+        console.log("Token received:", data.resetToken);
+        console.log("Token type:", typeof data.resetToken);
+
         setLoading(true);
         setError(null);
         setSuccess(false);
         try {
-            const response = await resetPasswordApi(data);
+            console.log("Calling resetPasswordApi...");
+            const response = await resetPasswordApi(data, data.resetToken!);
+            console.log("resetPasswordApi response:", response);
             setSuccess(true);
             return response;
         } catch (err: unknown) {

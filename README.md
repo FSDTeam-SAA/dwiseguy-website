@@ -128,11 +128,4 @@ When login is required during book creation:
 
 ---
 
-🧑‍💻 Author
 
-Rashedul Haque Rasel
-
-Built with ❤️ using Next.js, TypeScript, and Tailwind CSS.
-
-📧 [rashedulhaquerasel1@gmail.com](rashedulhaquerasel1@gmail.com)
-🌐 [Protfolio](https://rashedul-haque-rasel.vercel.app)

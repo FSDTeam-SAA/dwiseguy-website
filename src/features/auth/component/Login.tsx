@@ -27,24 +27,18 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-6xl bg-white rounded-xl shadow-lg p-10">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2 mb-5">
-          <Image
-            src="/images/logo.png"
-            alt="Company Logo"
-            width={120}
-            height={120}
-          />
-        </div>
+      <div className="w-full bg-black/40  rounded-xl shadow-lg p-10">
 
-        {/* Title */}
-        <h2 className="text-center text-primary text-2xl font-semibold mb-2">
-          Welcome
-        </h2>
-        <p className="text-center text-sm text-gray-500 mb-8">
-          Manage your orders, track shipments, and configure products easily.
-        </p>
+        <div className="text-start">
+
+          {/* Title */}
+          <h2 className=" text-primary text-2xl font-semibold mb-2">
+            Welcome
+          </h2>
+          <p className=" text-sm text-white mb-8">
+            Manage your orders, track shipments, and configure products easily.
+          </p>
+        </div>
 
         {/* Form */}
         <form className="space-y-4" onSubmit={onSubmit}>
@@ -54,7 +48,7 @@ const Login = () => {
             </div>
           )}
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-white mb-1">
               Email Address
             </label>
             <input
@@ -68,7 +62,7 @@ const Login = () => {
           </div>
 
           <div>
-            <label className="block text-sm text-gray-700 mb-1">Password</label>
+            <label className="block text-sm text-white mb-1">Password</label>
             <input
               type="password"
               placeholder="********"
@@ -81,7 +75,7 @@ const Login = () => {
 
           {/* Options */}
           <div className="flex items-center justify-between text-base mt-2 px-1">
-            <label className="flex items-center gap-2 text-gray-600 cursor-pointer select-none">
+            <label className="flex items-center gap-2 text-white cursor-pointer select-none">
               <input
                 type="checkbox"
                 className="w-4 h-4 rounded border-gray-300 text-primary focus:ring-primary accent-primary transition-all cursor-pointer"
@@ -98,7 +92,7 @@ const Login = () => {
             </Link>
           </div>
 
-          <div className="text-center text-sm text-gray-600 mt-4">
+          {/* <div className="text-center text-sm text-white mt-4">
             Don&apos;t have an account?{" "}
             <Link
               href="/register"
@@ -106,7 +100,7 @@ const Login = () => {
             >
               Create an account
             </Link>
-          </div>
+          </div> */}
 
           {/* Button */}
           <button
