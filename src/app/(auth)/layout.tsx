@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Welcome!",
@@ -12,8 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen w-screen bg-secondary flex items-center justify-center">
-      {children}
+    <div className="h-screen w-screen bg-[url('/images/login.jpg')] bg-cover bg-center flex items-center justify-center">
+      <div className="w-full max-w-3xl">
+        {children}
+      </div>
     </div>
   );
 }

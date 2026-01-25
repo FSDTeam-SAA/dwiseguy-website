@@ -24,24 +24,14 @@ const ResetPassword = () => {
   }
   return (
     <div className="min-h-screen flex items-center justify-center  px-4">
-      <div className=" max-w-3xl bg-white rounded-xl shadow-md px-10 py-12">
+      <div className="w-full bg-black/40  rounded-xl shadow-md px-10 py-12">
 
-        {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <Image
-            src="/images/logo.png"
-            alt="sktchLABS"
-            width={160}
-            height={40}
-            className="object-contain"
-          />
-        </div>
 
         {/* Heading */}
         <h2 className="text-center text-2xl font-semibold text-orange-500 mb-1">
           Reset Password
         </h2>
-        <p className="text-center text-base text-gray-500 mb-8">
+        <p className="text-center text-base text-white mb-8">
           Enter your email address and we&apos;ll send you a code to reset your password.
         </p>
 
@@ -49,7 +39,7 @@ const ResetPassword = () => {
         <form className="space-y-5" onSubmit={handleSubmit}>
           {/* Email */}
           <div>
-            <label className="block text-sm text-gray-700 mb-1">
+            <label className="block text-sm text-white mb-1">
               Email Address
             </label>
             <input

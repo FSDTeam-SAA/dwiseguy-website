@@ -1,10 +1,10 @@
-// features/auth/api/resetepassword.api.ts
+// features/auth/api/forgotpassword.api.ts
 import { api } from "@/lib/api";
 import { ForgotPasswordFormData } from "../types";
 
 export const forgotPassword = async (formData: ForgotPasswordFormData) => {
     try {
-        const response = await api.post("/auth/forget-password", formData);
+        const response = await api.post("/auth/forgot-password", formData);
         return response.data;
     } catch (error) {
         throw error;

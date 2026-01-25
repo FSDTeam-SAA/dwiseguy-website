@@ -16,6 +16,7 @@ export function useForgotPassword() {
         try {
             const response = await forgotPasswordApi({ email });
             setSuccess(response.message);
+            return response.data; // Return data just in case
         } catch (error) {
             const err = error as { response?: { data?: { message?: string } }; message?: string };
             setError(err.response?.data?.message || err.message || "Something went wrong");

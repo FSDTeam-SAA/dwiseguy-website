@@ -5,6 +5,8 @@ export interface User {
     role: string;
     profileImage: string;
     refreshToken: string;
+    resetToken: string;
+    resetTokenExpiry: string;
     updatedAt: string;
 }
 
@@ -24,8 +26,8 @@ export interface ForgotPasswordFormData {
 }
 
 export interface VerifyCodeFormData {
-    email: string;
-    otp: string;
+    resetEmail: string;
+    otp: number;
 }
 
 export interface RegisterFormData {
