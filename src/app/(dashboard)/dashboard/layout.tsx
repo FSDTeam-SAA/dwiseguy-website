@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Sidebar from "@/components/dashboard/common/Sidebar";
 
 export const metadata: Metadata = {
-    title: "Dashboard Template.",
+    title: "Bao Music",
     description:
-        "A modern dashboard template built with Next.js and Tailwind CSS.",
+        "Preparation Dedication Elevation",
 };
 
 export default function RootLayout({
