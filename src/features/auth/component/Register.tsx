@@ -27,7 +27,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="max-w-6xl bg-white rounded-xl shadow-lg p-10">
+      <div className="w-full bg-black/40  rounded-xl shadow-lg p-10">
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-5">
           <Image

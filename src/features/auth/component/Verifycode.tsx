@@ -57,9 +57,21 @@ const Verifycode = () => {
 
     const handleVerify = async (e: React.FormEvent) => {
         e.preventDefault();
-        const code = otp.join("");
-        if (code.length === 6 && email) {
-            await verifyCode(code, email);
+        const codeString = otp.join("");
+        const codeNum = Number(codeString);
+        if (codeString.length === 6 && !isNaN(codeNum) && email) {
+            const data = await verifyCode(codeNum, email);
+            console.log("Verifycode - API Response data:", data);
+            console.log("Verifycode - resetToken:", data?.resetToken);
+            if (data?.resetToken) {
+                // Store resetToken in localStorage or searchParams for NextPassword
+                localStorage.setItem('resetToken', data.resetToken);
+                const redirectUrl = `/newpassword?email=${encodeURIComponent(email)}&resetToken=${encodeURIComponent(data.resetToken)}`;
+                console.log("Verifycode - Redirecting to:", redirectUrl);
+                router.push(redirectUrl);
+            } else {
+                console.error("Verifycode - No resetToken in response!");
+            }
         }
     };
 
@@ -71,35 +83,25 @@ const Verifycode = () => {
         setTimer(60);
     };
 
-    useEffect(() => {
-        if (success) {
-            router.push(`/newpassword?email=${encodeURIComponent(email)}`);
-        }
-    }, [success, router, email]);
+    // Remove the automatic redirect useEffect since we handle it in handleVerify
+
     return (
         <div className="min-h-screen flex items-center justify-center  px-4">
-            <div className=" max-w-3xl bg-white rounded-xl shadow-md px-10 py-12">
+            <div className="w-full bg-black/40  rounded-xl shadow-md px-10 py-12">
 
-                {/* Logo */}
-                <div className="flex justify-center mb-6">
-                    <Image
-                        src="/images/logo.png"
-                        alt="sktchLABS"
-                        width={160}
-                        height={40}
-                        className="object-contain"
-                    />
+
+
+                <div className="flex flex-col justify-start items-center mb-6">
+                    {/* Heading */}
+                    <h2 className="text-start text-2xl font-semibold text-primary mb-1">
+                        Verify Your Account
+                    </h2>
+                    <p className="text-start text-sm text-white mb-8">
+                        Enter the 6-digit code sent to your email to continue.
+                    </p>
+
                 </div>
-
-                {/* Heading */}
-                <h2 className="text-center text-2xl font-semibold text-orange-500 mb-1">
-                    Verify Your Account
-                </h2>
-                <p className="text-center text-sm text-gray-500 mb-8">
-                    Enter the 6-digit code sent to your email to continue.
-                </p>
-
-                <div className="bg-white w-full max-w-xl ">
+                <div className="bg-transparent w-full max-w-xl ">
                     <div className="mb-4 text-center">
                         {error && <p className="text-red-500 text-sm">{error}</p>}
                         {success && <p className="text-green-500 text-sm">{success}</p>}
@@ -118,7 +120,7 @@ const Verifycode = () => {
                                     value={digit}
                                     onChange={(e) => handleChange(e.target.value, i)}
                                     onKeyDown={(e) => handleKeyDown(e, i)}
-                                    className={`w-14 h-14 text-2xl text-center border rounded-lg outline-none transition
+                                    className={`w-14 h-14 text-2xl text-center text-white border rounded-lg outline-none transition
                 ${digit
                                             ? "border-primary text-primary"
                                             : "border-gray-300 text-gray-700"
@@ -128,14 +130,14 @@ const Verifycode = () => {
                         </div>
 
                         {/* Timer + Resend */}
-                        <div className="flex justify-between items-center text-sm text-gray-600 mb-6">
+                        <div className="flex justify-between items-center text-sm text-white mb-6">
                             <div className="flex items-center gap-2">
                                 <TimerIcon className="w-5 h-5 text-gray-500" />
                                 <span>{String(timer).padStart(2, "0")} Second</span>
                             </div>
 
                             <div className="items-end">
-                                <span className="text-gray-500 text-md mr-2 mb-1">
+                                <span className="text-white text-md mr-2 mb-1">
                                     Didn&apos;t get a code?
                                 </span>
 

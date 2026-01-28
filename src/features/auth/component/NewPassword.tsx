@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -9,7 +8,10 @@ import { useResetPassword } from "../hooks/useResetPassword";
 const NewPassword = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const email = searchParams.get("email"); // email from query params
+
+    // Store URL params in local state
+    const [resetToken, setResetToken] = useState<string | null>(null);
+    const [email, setEmail] = useState<string | null>(null);
 
     const { handleResetPassword, loading, error: apiError } = useResetPassword();
 
@@ -21,12 +23,32 @@ const NewPassword = () => {
 
     const [localError, setLocalError] = useState<string | null>(null);
 
+    // Initialize state from URL params
+    React.useEffect(() => {
+        const emailParam = searchParams.get("email");
+        const tokenParam = searchParams.get("resetToken");
+
+        setEmail(emailParam);
+        setResetToken(tokenParam);
+
+        console.log("NewPassword - Email from params:", emailParam);
+        console.log("NewPassword - ResetToken from params:", tokenParam);
+        console.log("NewPassword - Full URL:", window.location.href);
+    }, [searchParams]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLocalError(null);
 
-        if (!email) {
-            setLocalError("Email address missing. Please try the reset process again.");
+        console.log("=== NewPassword handleSubmit ===");
+        console.log("Email:", email);
+        console.log("ResetToken:", resetToken);
+        console.log("ResetToken type:", typeof resetToken);
+        console.log("ResetToken length:", resetToken?.length);
+
+        if (!email || !resetToken) {
+            setLocalError("Missing information. Please follow the link from your email again.");
+            console.error("Missing email or resetToken!");
             return;
         }
 
@@ -40,11 +62,15 @@ const NewPassword = () => {
             return;
         }
 
+        console.log("Calling handleResetPassword with:", { email, newPassword: "***", confirmPassword: "***", resetToken });
         const res = await handleResetPassword({
             email,
             newPassword,
+            confirmPassword,
+            resetToken,
         });
 
+        console.log("handleResetPassword response:", res);
         if (res) {
             alert("Password reset successfully");
             router.push("/login");
@@ -53,23 +79,14 @@ const NewPassword = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center  px-4">
-            <div className="w-full max-w-5xl bg-white rounded-xl shadow-md px-10 py-12">
-                {/* Logo */}
-                <div className="flex flex-col items-center justify-center gap-2 mb-6">
-                    <Image
-                        src="/images/logo.png"
-                        alt="sktchLABS"
-                        width={180}
-                        height={50}
-                        className="object-contain"
-                    />
-                </div>
+            <div className="w-full bg-black/40  rounded-xl shadow-md px-10 py-12">
+
 
                 {/* Title */}
-                <h2 className="text-center text-[#E88741] text-3xl font-bold mb-2">
+                <h2 className="text-center text-primary text-3xl font-bold mb-2">
                     Reset Your Password
                 </h2>
-                <p className="text-center text-gray-500 mb-10 text-lg">
+                <p className="text-center text-white mb-10 text-lg">
                     Set a strong password to secure your account.
                 </p>
 
@@ -77,14 +94,14 @@ const NewPassword = () => {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     {/* New Password */}
                     <div>
-                        <label className="block text-lg font-medium text-gray-900 mb-2">
+                        <label className="block text-lg font-medium text-white mb-2">
                             New Password
                         </label>
                         <div className="relative">
                             <input
                                 type={showNewPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 border text-white border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 required
@@ -101,14 +118,14 @@ const NewPassword = () => {
 
                     {/* Confirm Password */}
                     <div>
-                        <label className="block text-lg font-medium text-gray-900 mb-2">
+                        <label className="block text-lg font-medium text-white mb-2">
                             Confirm New Password
                         </label>
                         <div className="relative">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 border text-white border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
@@ -140,7 +157,8 @@ const NewPassword = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full mt-8 bg-[#FA923C] hover:bg-[#F97316] text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50"
+                        onClick={handleSubmit}
+                        className="w-full mt-8 bg-primary cursor-pointer hover:bg-primary/50 text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50"
                     >
                         {loading ? "Saving Password..." : "Save Password"}
                     </button>
