@@ -83,10 +83,10 @@ const NewPassword = () => {
 
 
                 {/* Title */}
-                <h2 className="text-center text-[#E88741] text-3xl font-bold mb-2">
+                <h2 className="text-center text-primary text-3xl font-bold mb-2">
                     Reset Your Password
                 </h2>
-                <p className="text-center text-gray-500 mb-10 text-lg">
+                <p className="text-center text-white mb-10 text-lg">
                     Set a strong password to secure your account.
                 </p>
 
@@ -94,14 +94,14 @@ const NewPassword = () => {
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     {/* New Password */}
                     <div>
-                        <label className="block text-lg font-medium text-gray-900 mb-2">
+                        <label className="block text-lg font-medium text-white mb-2">
                             New Password
                         </label>
                         <div className="relative">
                             <input
                                 type={showNewPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 border text-white border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 required
@@ -118,14 +118,14 @@ const NewPassword = () => {
 
                     {/* Confirm Password */}
                     <div>
-                        <label className="block text-lg font-medium text-gray-900 mb-2">
+                        <label className="block text-lg font-medium text-white mb-2">
                             Confirm New Password
                         </label>
                         <div className="relative">
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 border text-white border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
@@ -158,7 +158,7 @@ const NewPassword = () => {
                         type="submit"
                         disabled={loading}
                         onClick={handleSubmit}
-                        className="w-full mt-8 bg-[#FA923C] cursor-pointer hover:bg-[#F97316] text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50"
+                        className="w-full mt-8 bg-primary cursor-pointer hover:bg-primary/50 text-white text-lg font-medium py-4 rounded-lg transition-colors disabled:opacity-50"
                     >
                         {loading ? "Saving Password..." : "Save Password"}
                     </button>
