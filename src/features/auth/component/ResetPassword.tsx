@@ -28,7 +28,7 @@ const ResetPassword = () => {
 
 
         {/* Heading */}
-        <h2 className="text-center text-2xl font-semibold text-orange-500 mb-1">
+        <h2 className="text-center text-2xl font-semibold text-primary mb-1">
           Reset Password
         </h2>
         <p className="text-center text-base text-white mb-8">
@@ -47,7 +47,7 @@ const ResetPassword = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="hello@example.com"
-              className="w-full px-4 py-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+              className="w-full px-4 py-3 text-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
               required
             />
           </div>
