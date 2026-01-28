@@ -12,9 +12,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "sktch Labs",
+  title: "Bao Music",
   description:
-    "Design amazing digital experiences that create more happy in the world.",
+    "Preparation Dedication Elevation",
 };
 
 export default function RootLayout({
