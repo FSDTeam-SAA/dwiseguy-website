@@ -18,15 +18,15 @@ const Academypage = () => {
     return (
         <div className="container mx-auto  min-h-screen text-white p-6 md:p-12">
 
-            <div className="bg-black/40 p-20 rounded-md">
+            <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md">
 
                 {/* Header / Band Stand Button */}
-                <div className="flex justify-between items-center mb-12">
-                    <div className="">               
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
+                    <div className="">
                         <h2 className="text-4xl text-primary font-bold mb-4">Academy</h2>
                         <p className="text-lg font-semibold mb-4">Explore the world of music with our virtual instruments.</p>
                     </div>
-                    <Button className="bg-[#7059bc] hover:bg-[#5e4aa3] text-white px-10 py-6 rounded-lg font-bold text-lg shadow-lg">
+                    <Button className="bg-[#7059bc] hover:bg-[#5e4aa3] text-white px-10 py-6 rounded-lg font-bold text-lg shadow-lg w-full sm:w-auto">
                         Band Stand
                     </Button>
                 </div>
