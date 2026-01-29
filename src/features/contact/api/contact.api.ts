@@ -1,16 +1,15 @@
 import { api } from "@/lib/api";
 
 export interface ContactFormData {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   email: string;
-  phone: string;
+  subject: string;
   message: string;
 }
 
 export async function submitContactForm(data: ContactFormData) {
   try {
-    const res = await api.post("/contact/submit", data);
+    const res = await api.post("/contact-us", data);
     return res.data;
   } catch (err) {
     console.error("Error submitting contact form:", err);
