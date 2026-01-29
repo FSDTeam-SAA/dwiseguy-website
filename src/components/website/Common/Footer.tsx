@@ -55,7 +55,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="w-full bg-[#3D3E40]  pt-16 pb-8 border-t border-gray-100"
+      className="w-full bg-[#3D3E40]  pt-16 pb-8  border-gray-100"
       role="contentinfo"
     >
       <div className="container mx-auto px-6">
