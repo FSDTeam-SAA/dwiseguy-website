@@ -1,8 +1,6 @@
 "use client";
 import React from "react";
 import Hero from "../../features/category-page/components/hero";
-import { Features } from "@/features/category-page/components/features";
-import { FAQ } from "./Common/faq";
 import Funsection from "./PageSections/HomePage/Funsection";
 import Doublebutton from "./PageSections/HomePage/Doublebutton";
 import ReadyToStart from "./PageSections/HomePage/ReadyToStart";
