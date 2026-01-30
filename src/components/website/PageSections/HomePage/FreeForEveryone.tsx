@@ -44,7 +44,7 @@ export default function Page() {
     <>
       {/* Original Denmark Section */}
       <FeatureSection 
-        title="Free for everyone in Denmark"
+        title=" Everyone can learn "
         description="We believe in making piano education accessible to everyone. DwiseGuy Academy is proud to offer its entire curriculum for free to all residents in Denmark. Whether you&apos;re in Nordjylland, Midtjylland, or Syddanmark, you can start learning today at no cost."
         imageSrc="/images/Denmark.png"
         imageAlt="Map of Denmark"
