@@ -3,7 +3,7 @@ import { api } from "@/lib/api";
 
 export const changePassword = async (data: { oldPassword: string; newPassword: string }, accessToken: string) => {
     try {
-        const response = await api.post("/auth/change-password", data, {
+        const response = await api.patch("/auth/update-password", data, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
             },
