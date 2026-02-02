@@ -88,7 +88,7 @@ const ChangePassword = () => {
                             <input
                                 type={showOldPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 text-white border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={oldPassword}
                                 onChange={(e) => setOldPassword(e.target.value)}
                                 required
@@ -112,7 +112,7 @@ const ChangePassword = () => {
                             <input
                                 type={showNewPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 text-white border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={newPassword}
                                 onChange={(e) => setNewPassword(e.target.value)}
                                 required
@@ -136,7 +136,7 @@ const ChangePassword = () => {
                             <input
                                 type={showConfirmPassword ? "text" : "password"}
                                 placeholder="********"
-                                className="w-full px-4 py-3 border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
+                                className="w-full px-4 py-3 text-white border border-gray-200 rounded-lg text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#E88741]/50 focus:border-[#E88741]"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
                                 required

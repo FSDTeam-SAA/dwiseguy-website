@@ -1,49 +1,35 @@
 import React from "react";
-import { BookOpen, Download, Upload, WandSparkles } from "lucide-react";
+import { Award, Music, Video } from "lucide-react";
 import WhyLearn from "./WhyLearn";
 
 const Howitworks = () => {
     return (
-        <div className="bg-secondary">
-            <div className=" mx-auto container py-12">
-                <div className="mb-[30px]  text-center">
-                    <h2 className="text-[#252F3F] text-5xl font-bold  leading-[120%] pb-2">
-                        How it works
+        <section className="bg-white py-16 md:py-24 px-6 lg:px-12">
+            <div className="container mx-auto">
+                <div className="mb-12 text-center">
+                    <h2 className="text-4xl md:text-5xl font-bold text-gray-900 leading-tight pb-2">
+                        Why choose this platform
                     </h2>
-                    <p className="text-[16px] max-w-[500px] text-[#6B7280] text-center w-[90%] mx-auto leading-6 font-normal">
-                        Create your personalized coloring book in minutes with our simple 4-step process
-                    </p>
                 </div>
-                <div className="flex flex-wrap justify-between">
+                <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
                     <WhyLearn
-                        title="Upload Your Photos"
-                        description="Simply upload your photos-pets, family, memories, or anything meaningful."
-                        icon={<Upload size={24} color="white" />}
-
-
+                        title="Interactive Lessons"
+                        description="Watch video demonstrations and read clear explanations of piano concepts"
+                        icon={<Video size={24} color="white" />}
                     />
                     <WhyLearn
-                        title="Download or Print"
-                        description="Get instant digital PDF or order a professionally printed book delivered to your door."
-                        icon={<Download size={24} color="white" />}
-
+                        title="Virtual Practice"
+                        description="Practice directly in your browser with our responsive virtual piano keyboard."
+                        icon={<Music size={24} color="white" />}
                     />
                     <WhyLearn
-                        title="Al Magic Conversion"
-                        description="Our Al transforms your photos into beautiful, clean line art perfect for coloring."
-                        icon={<WandSparkles size={24} color="white" />}
-
-                    />
-
-                    <WhyLearn
-                        title="Customize Your Book"
-                        description="Choose your page count, add a dedication, and select the perfect cover design."
-                        icon={<BookOpen size={24} color="white" />}
-
+                        title="Certificate"
+                        description="Take quizzes after each lesson to validate your understanding and unlock new content. Then get professional Cirtificate"
+                        icon={<Award size={24} color="white" />}
                     />
                 </div>
             </div>
-        </div>
+        </section>
     );
 };
 

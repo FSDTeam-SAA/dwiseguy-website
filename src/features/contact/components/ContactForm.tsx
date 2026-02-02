@@ -4,11 +4,11 @@ import * as z from "zod";
 import Image from "next/image";
 import { memo } from "react";
 import { useForm } from "react-hook-form";
+import { motion, Variants } from "framer-motion";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormField,
@@ -17,28 +17,14 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useContactMutation } from "../hooks/use-contact-mutation";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  fullName: z.string().min(1, "Full name is required"),
   email: z.string().email("Invalid email address"),
-  phone: z
-    .string()
-    .min(10, "Phone number must be at least 10 digits")
-    .max(15, "Phone number is too long"),
+  subject: z.string().min(1, "Subject is required"),
   message: z.string().min(1, "Message is required"),
-  privacyPolicy: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the privacy policy",
-  }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -46,24 +32,54 @@ type FormValues = z.infer<typeof formSchema>;
 export const ContactForm = memo(() => {
   const { mutate, isPending } = useContactMutation();
 
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 100, damping: 10 },
+    },
+  };
+
+  const imageVariants: Variants = {
+    hidden: { x: 50, opacity: 0 },
+    visible: {
+      x: 0,
+      opacity: 1,
+      transition: { type: "spring", stiffness: 70, damping: 20, delay: 0.4 },
+    },
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.3 },
+    },
+  };
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      fullName: "",
       email: "",
-      phone: "",
+      subject: "",
       message: "",
-      privacyPolicy: false,
     },
   });
 
   async function onSubmit(values: FormValues) {
     const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
+      fullName: values.fullName,
       email: values.email,
-      phone: values.phone,
+      subject: values.subject,
       message: values.message,
     };
     mutate(payload, {
@@ -74,16 +90,22 @@ export const ContactForm = memo(() => {
   }
 
   return (
-    <div className="bg-white py-16 md:py-24 ">
-      <div className="container mx-auto px-4 max-w-4xl">
+    <div className="bg-transparent py-16 md:py-24">
+      <motion.div
+        className="container mx-auto px-4 max-w-4xl border-2 rounded-lg bg-black/65 border-white p-5"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={containerVariants}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
           {/* Left side: Form */}
-          <div className="order-2 lg:order-1">
-            <h2 className="text-3xl md:text-4xl font-semibold mb-3 text-slate-900">
-              Get in touch
+          <motion.div className="order-2 lg:order-1" variants={itemVariants}>
+            <h2 className="text-3xl md:text-4xl font-semibold mb-3 text-white">
+              Get in touch With Bao Music
             </h2>
-            <p className="text-slate-600 mb-10 text-lg">
-              Our friendly team would love to hear from you.
+            <p className="text-white mb-10 text-lg">
+              We are here to help you with any questions or concerns you may have.
             </p>
 
             <Form {...form}>
@@ -91,46 +113,27 @@ export const ContactForm = memo(() => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6"
               >
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* First Name */}
+                <div className="grid grid-cols-1 sm:grid-cols-1 gap-6">
+                  {/* Full Name */}
                   <FormField
                     control={form.control}
-                    name="firstName"
+                    name="fullName"
                     render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-slate-700 font-medium">
-                          First name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="First name"
-                            {...field}
-                            className="h-11 rounded-lg border-slate-200 focus:ring-orange-500 focus:border-orange-500"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  {/* Last Name */}
-                  <FormField
-                    control={form.control}
-                    name="lastName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-slate-700 font-medium">
-                          Last name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Last name"
-                            {...field}
-                            className="h-11 rounded-lg border-slate-200 focus:ring-orange-500 focus:border-orange-500"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
+                      <motion.div variants={itemVariants}>
+                        <FormItem>
+                          <FormLabel className="text-white font-medium">
+                            Full Name
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Full Name"
+                              {...field}
+                              className="h-11 rounded-lg border-white text-white focus:ring-primary focus:border-primary"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </motion.div>
                     )}
                   />
                 </div>
@@ -140,52 +143,44 @@ export const ContactForm = memo(() => {
                   control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-slate-700 font-medium">
-                        Email
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="you@company.com"
-                          {...field}
-                          className="h-11 rounded-lg border-slate-200 focus:ring-orange-500 focus:border-orange-500"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                    <motion.div variants={itemVariants}>
+                      <FormItem>
+                        <FormLabel className="text-white font-medium">
+                          Email
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="you@company.com"
+                            {...field}
+                            className="h-11 rounded-lg border-white text-white focus:ring-orange-500 focus:border-orange-500"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    </motion.div>
                   )}
                 />
 
-                {/* Phone Number */}
+                {/* Subject */}
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="subject"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-slate-700 font-medium">
-                        Phone number
-                      </FormLabel>
-                      <div className="flex gap-0">
-                        <Select defaultValue="US">
-                          <SelectTrigger className="w-24 rounded-r-none border-r-0 border-slate-200 bg-white focus:ring-0 focus:ring-offset-0">
-                            <SelectValue placeholder="US" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="US">US</SelectItem>
-                            <SelectItem value="UK">UK</SelectItem>
-                            <SelectItem value="CA">CA</SelectItem>
-                          </SelectContent>
-                        </Select>
+                    <motion.div variants={itemVariants}>
+                      <FormItem>
+                        <FormLabel className="text-white font-medium">
+                          Subject
+                        </FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="+1 (555) 000-0000"
+                            placeholder="Subject"
                             {...field}
-                            className="flex-1 rounded-l-none border-slate-200 focus:ring-orange-500 focus:border-orange-500"
+                            className="h-11 rounded-lg border-white text-white focus:ring-orange-500 focus:border-orange-500"
                           />
                         </FormControl>
-                      </div>
-                      <FormMessage />
-                    </FormItem>
+                        <FormMessage />
+                      </FormItem>
+                    </motion.div>
                   )}
                 />
 
@@ -194,83 +189,65 @@ export const ContactForm = memo(() => {
                   control={form.control}
                   name="message"
                   render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-slate-700 font-medium">
-                        Message
-                      </FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Leave us a message..."
-                          {...field}
-                          className="min-h-[128px] rounded-lg border-slate-200 focus:ring-orange-500 focus:border-orange-500 resize-none"
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                {/* Privacy Policy */}
-                <FormField
-                  control={form.control}
-                  name="privacyPolicy"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          className="mt-1 border-slate-200 data-[state=checked]:bg-orange-600 data-[state=checked]:border-orange-600"
-                        />
-                      </FormControl>
-                      <div className="leading-none">
-                        <FormLabel className="text-slate-600 font-normal">
-                          You agree to our friendly{" "}
-                          <a
-                            href="/privacy-policy"
-                            className="underline hover:text-orange-600 transition-colors"
-                          >
-                            privacy policy
-                          </a>
-                          .
+                    <motion.div variants={itemVariants}>
+                      <FormItem>
+                        <FormLabel className="text-white font-medium">
+                          Message
                         </FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Leave us a message..."
+                            {...field}
+                            className="min-h-[128px] rounded-lg border-white text-white focus:ring-primary focus:border-primary resize-none"
+                          />
+                        </FormControl>
                         <FormMessage />
-                      </div>
-                    </FormItem>
+                      </FormItem>
+                    </motion.div>
                   )}
                 />
 
                 {/* Submit */}
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="w-full bg-[#FF8C38] hover:bg-[#e67a29] text-white rounded-lg h-12 text-base font-semibold shadow-sm transition-all duration-200"
+                <motion.div
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {isPending ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </div>
-                  ) : (
-                    "Send message"
-                  )}
-                </Button>
+                  <Button
+                    type="submit"
+                    disabled={isPending}
+                    className="w-full bg-primary hover:bg-primary/50 text-white rounded-lg h-12 text-base font-semibold shadow-sm transition-all duration-200"
+                  >
+                    {isPending ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        Sending...
+                      </div>
+                    ) : (
+                      "Send message"
+                    )}
+                  </Button>
+                </motion.div>
               </form>
             </Form>
-          </div>
+          </motion.div>
 
           {/* Right side: Image */}
-          <div className="order-1 lg:order-2 relative h-[400px] md:h-[600px] w-full rounded-2xl overflow-hidden shadow-2xl">
+          <motion.div
+            className="order-1 lg:order-2 relative h-[400px] md:h-[600px] w-full rounded-2xl overflow-hidden shadow-2xl"
+            variants={imageVariants}
+            whileHover="hover"
+          >
             <Image
-              src="/images/contact_woman_camera.png"
+              src="/images/contact.png"
               alt="Contact us"
               fill
               className="object-cover"
               priority
             />
-          </div>
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 });

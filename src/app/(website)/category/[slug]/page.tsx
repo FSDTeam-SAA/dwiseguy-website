@@ -1,4 +1,4 @@
-import { Hero } from "@/features/category-page/components/hero";
+import Hero from "@/features/category-page/components/hero";
 
 export default async function page({
   params,
@@ -9,7 +9,7 @@ export default async function page({
   console.log(slug);
   return (
     <div>
-      <Hero type={slug} />
+      <Hero />
     </div>
   );
 }
