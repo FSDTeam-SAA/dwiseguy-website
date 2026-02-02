@@ -172,6 +172,58 @@ const Piano = () => {
     return elements;
   };
 
+  // --- Keyboard Mapping ---
+  // Simple mapping for ~1.5 octaves
+  const KEY_TO_NOTE_INDEX: { [key: string]: number } = {
+    a: 0, // C
+    w: 1, // C#
+    s: 2, // D
+    e: 3, // D#
+    d: 4, // E
+    f: 5, // F
+    t: 6, // F#
+    g: 7, // G
+    y: 8, // G#
+    h: 9, // A
+    u: 10, // A#
+    j: 11, // B
+    k: 12, // C
+    o: 13, // C#
+    l: 14, // D
+    p: 15, // D#
+    ";": 16, // E
+    "'": 17, // F
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.repeat) return;
+      const key = e.key.toLowerCase();
+      const noteIndex = KEY_TO_NOTE_INDEX[key];
+
+      if (noteIndex !== undefined && notes[noteIndex]) {
+        handleNoteTrigger(notes[noteIndex], true);
+      }
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const key = e.key.toLowerCase();
+      const noteIndex = KEY_TO_NOTE_INDEX[key];
+
+      if (noteIndex !== undefined && notes[noteIndex]) {
+        handleNoteTrigger(notes[noteIndex], false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [notes, melodyMode, selectedKey]); // Dependencies needed for handleNoteTrigger closure
+
   return (
     <div className="w-full bg-[#0F5F85] p-6 rounded-xl flex flex-col gap-8 shadow-2xl">
       {/* --- Top Control Bar --- */}
