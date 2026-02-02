@@ -3,8 +3,10 @@ import React from 'react'
 
 const page = () => {
   return (
-    <Piano />
-)
+    <div className="">
+      <Piano />
+    </div>
+  )
 }
 
 export default page
