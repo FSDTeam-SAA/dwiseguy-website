@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X, User, LogOut, Package, Key } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -94,8 +94,17 @@ const UserProfile = ({ session }: { session: Session | null }) => (
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { data: session, status } = useSession();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isActive = (path: string) => pathname === path;
 
@@ -105,7 +114,14 @@ export default function Navbar() {
       : unauthenticatedMenuItems;
 
   return (
-    <nav className="sticky top-0 z-50 w-full h-20 px-6 rounded-none py-1 bg-primary/80 backdrop-blur-md border border-white/10 shadow-xl transition-all duration-300">
+    <nav
+      className={cn(
+        "sticky top-0 z-50 w-full h-20 px-6 rounded-none py-1 transition-all duration-300",
+        scrolled
+          ? "bg-white border-b border-gray-200 shadow-lg"
+          : "bg-primary/80 backdrop-blur-md border-b border-white/10 shadow-xl",
+      )}
+    >
       <div className="container mx-auto max-w-7xl flex items-center justify-between ">
         {/* 1. LOGO */}
         <Link
@@ -130,8 +146,12 @@ export default function Navbar() {
                 className={cn(
                   "px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                   isActive(item.href)
-                    ? "bg-white/20 text-white shadow-inner border border-white/20"
-                    : "text-white/70 hover:text-white hover:bg-white/10",
+                    ? scrolled
+                      ? "bg-primary text-white shadow-md"
+                      : "bg-white/20 text-white shadow-inner border border-white/20"
+                    : scrolled
+                      ? "text-primary/70 hover:text-primary hover:bg-primary/5"
+                      : "text-white/70 hover:text-white hover:bg-white/10",
                 )}
               >
                 {item.label}
@@ -146,7 +166,12 @@ export default function Navbar() {
             <Link href="/login">
               <Button
                 variant="outline"
-                className="border-white/20 bg-white/10 text-white hover:bg-white hover:text-primary font-bold"
+                className={cn(
+                  "font-bold transition-all duration-300",
+                  scrolled
+                    ? "border-primary/20 bg-primary text-white hover:bg-primary/90"
+                    : "border-white/20 bg-white/10 text-white hover:bg-white hover:text-primary",
+                )}
               >
                 Log In
               </Button>
@@ -162,7 +187,11 @@ export default function Navbar() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="text-white">
+              <Button
+                variant="ghost"
+                size="icon"
+                className={cn("transition-colors", scrolled ? "text-primary" : "text-white")}
+              >
                 {open ? <X size={24} /> : <Menu size={24} />}
               </Button>
             </SheetTrigger>
