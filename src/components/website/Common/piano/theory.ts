@@ -23,38 +23,51 @@ const BASE_NOTES = [
   { name: 'B', isBlack: false },
 ];
 
-// Helper to generate notes across octaves
-export const generateNotes = (startOctave: number, endOctave: number): Note[] => {
-  const notes: Note[] = [];
+// Helper to generate notes across octaves shifted by a root key
+export const generateNotes = (rootKey: string): Note[] => {
+  const masterPool: Note[] = [];
+  const startOctave = 1;
+  const endOctave = 6;
+
+  // Generate a master pool of notes across multiple octaves
   for (let oct = startOctave; oct <= endOctave; oct++) {
     BASE_NOTES.forEach((base) => {
-      // Use Flat notation for filenames as per the directory structure
       const fileNoteName = base.flat || base.name;
       const filename = `/music/mp3/${fileNoteName}${oct}.mp3`;
 
-      notes.push({
+      masterPool.push({
         ...base,
         octave: oct,
         filename,
-        // Unique identifier combining name and octave
         name: `${base.name}${oct}`,
-        // Keep canonical sharp/flat names for display
         sharp: base.sharp,
         flat: base.flat
       });
     });
   }
-  // Remove notes that might be out of range if needed, or stick to full octaves
-  // For a standard starting C to C, we usually end on the first note of the next octave
-  notes.push({
-    name: `C${endOctave + 1}`,
-    filename: `/music/mp3/C${endOctave + 1}.mp3`,
-    isBlack: false,
-    octave: endOctave + 1
-  })
 
-  return notes;
+  // Find the first index of the rootKey in the master pool (starting at octave 2 for a good middle range)
+  let startIndex = masterPool.findIndex(n => {
+    const nName = n.name.replaceAll(/\d/g, '');
+    const nFlat = n.flat?.replaceAll(/\d/g, '');
+    const nSharp = n.sharp?.replaceAll(/\d/g, '');
+    return (nName === rootKey || nFlat === rootKey || nSharp === rootKey) && n.octave >= 2;
+  });
+
+  if (startIndex === -1) {
+    // Fallback: try to find it in octave 1 if 2 fails, or just default to C2 (index 12 usually)
+    startIndex = masterPool.findIndex(n => {
+      const nName = n.name.replaceAll(/\d/g, '');
+      return nName === 'C' && n.octave === 2;
+    });
+    if (startIndex === -1) startIndex = 0;
+  }
+
+  // Ensure we have enough notes. If not, we might need to extend generation or handle edge case.
+  // 37 notes = 3 octaves inclusively (0..36)
+  return masterPool.slice(startIndex, startIndex + 37);
 };
+
 
 // Intervals (semitones)
 const SCALES_INTERVALS: { [key: string]: number[] } = {
@@ -99,27 +112,51 @@ export const getScaleNotes = (root: string, scaleType: 'Major' | 'Minor' = 'Majo
 };
 
 // Get Triad (Root, 3rd, 5th) indices relative to the note's position in the full array
-// This expects the 'index' to be the index in the full generated notes array
 export const getChordIndices = (rootIndex: number): number[] => {
-  // Major triad: 0, 4, 7 semitones
-  // We explicitly requested "based on the selected musical key" -> "Root, 3rd, 5th"
-  // However, usually "Chord Mode" on a simple piano roll often just implies the chord *built on that key*
-  // If the request means "Scalic Chords" (e.g. I, ii, iii), that's more complex.
-  // The prompt says: "clicking a single key should trigger the corresponding triad (Root, 3rd, 5th) based on the selected musical key."
-  // This strongly implies diatonic chords. If we are in C Major, and click D, we should get D Minor (D, F, A).
-  // If we click E, we get E Minor.
-  // However, implementing full diatonic chord logic requires knowing which scale degree the clicked note is.
-
-  // START SIMPLE: Let's assume Chromatic Major Chords first, OR if a key is selected, we try to fit it.
-  // Re-reading: "based on the selected musical key".
-  // Strategy: 
-  // 1. Identify if the clicked note is in the selected scale.
-  // 2. If yes, find its indices for 3rd and 5th WITHIN the scale, then map back to chromatic.
-  // 3. If no, just play a Major triad? Or mute? Let's default to Major Triad (0, 4, 7) if no key or out of key, 
-  //    and Diatonic if in key.
-
-  // Actually, for a visualization tool, "Chord Mode" usually just plays a fixed shape or a smart shape.
-  // Let's implement function `getDiatonicTriad` that takes the note and the current Scale to return frequency/indices.
-
-  return [rootIndex, rootIndex + 4, rootIndex + 7]; // Default Major for now, will refine in component logic
+  return [rootIndex, rootIndex + 4, rootIndex + 7]; // Default Major for now
 };
+
+export const getDiatonicChordIndices = (
+  rootIndex: number,
+  allNotes: Note[],
+  scaleNotes: string[]
+): number[] => {
+  const rootNote = allNotes[rootIndex];
+  const rootNameOnly = rootNote.name.replaceAll(/\d/g, '');
+
+  // If the note isn't in the scale, default to a Major Triad (0, 4, 7 semitones)
+  if (!scaleNotes.includes(rootNameOnly)) {
+    return [rootIndex, rootIndex + 4, rootIndex + 7];
+  }
+
+  // Find the next scale degrees (skip 1 for the 3rd, skip 3 for the 5th)
+  const chordIndices = [rootIndex];
+  let found = 1;
+  let checkIndex = rootIndex + 1;
+
+  while (found < 3 && checkIndex < allNotes.length) {
+    const checkName = allNotes[checkIndex].name.replaceAll(/\d/g, '');
+    const isNextDegree = scaleNotes.includes(checkName);
+
+    if (isNextDegree) {
+      const degreesInBetween = countScaleDegreesBetween(rootIndex, checkIndex, allNotes, scaleNotes);
+      if ((found === 1 && degreesInBetween === 2) || (found === 2 && degreesInBetween === 4)) {
+        chordIndices.push(checkIndex);
+        found++;
+      }
+    }
+    checkIndex++;
+  }
+
+  return chordIndices;
+};
+
+// Helper to count how many scale notes are between two indices
+const countScaleDegreesBetween = (start: number, end: number, allNotes: Note[], scaleNotes: string[]) => {
+  let count = 0;
+  for (let i = start + 1; i <= end; i++) {
+    if (scaleNotes.includes(allNotes[i].name.replaceAll(/\d/g, ''))) count++;
+  }
+  return count;
+};
+

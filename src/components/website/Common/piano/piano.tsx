@@ -1,74 +1,85 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Square } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   generateNotes,
   getScaleInfo,
-  getChordIndices,
   KEYS,
   Note,
 } from "./theory";
 import PianoKey from "./PianoKey";
+import Image from "next/image";
 
 const KEY_TO_NOTE_INDEX: { [key: string]: number } = {
-  a: 0, // C
-  w: 1, // C#
-  s: 2, // D
-  e: 3, // D#
-  d: 4, // E
-  f: 5, // F
-  t: 6, // F#
-  g: 7, // G
-  y: 8, // G#
-  h: 9, // A
-  u: 10, // A#
-  j: 11, // B
-  k: 12, // C
-  o: 13, // C#
-  l: 14, // D
-  p: 15, // D#
-  ";": 16, // E
-  "'": 17, // F
+  a: 0,
+  w: 1,
+  s: 2,
+  e: 3,
+  d: 4,
+  f: 5,
+  t: 6,
+  g: 7,
+  y: 8,
+  h: 9,
+  u: 10,
+  j: 11,
+  k: 12,
+  o: 13,
+  l: 14,
+  p: 15,
+  ";": 16,
+  "'": 17,
 };
 
 const Piano = () => {
   // --- State ---
-  const [notes] = useState<Note[]>(() => generateNotes(2, 4)); // Range C2 - C5
-  const [selectedKey, setSelectedKey] = useState<string>("C"); // Default Key
+  const [selectedKey, setSelectedKey] = useState<string>("C");
 
-  const scaleInfo = useMemo(
+
+  // Optimized: Derived notes from selectedKey to avoid unnecessary state sync
+  const notes = useMemo(() => generateNotes(selectedKey), [selectedKey]);
+
+  const { degrees: scaleDegrees } = useMemo(
     () => getScaleInfo(selectedKey, "Major"),
     [selectedKey],
   );
-  const scaleNotes = scaleInfo.notes;
-  const scaleDegrees = scaleInfo.degrees;
 
   const [melodyMode, setMelodyMode] = useState<boolean>(true); // true = Melody, false = Chord
   const [showNotes, setShowNotes] = useState<boolean>(true);
   const [activeNotes, setActiveNotes] = useState<Set<string>>(new Set());
-  const [lastNoteName, setLastNoteName] = useState<string>("Key");
-  const [playBuffer, setPlayBuffer] = useState<Note[]>([]);
+
+  // Refactored Buffer/Recording State
+  const [sequenceBuffer, setSequenceBuffer] = useState<Note[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [isPlaybackActive, setIsPlaybackActive] = useState(false);
+
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+
+  // --- Handlers ---
+  const handleKeyChange = (newKey: string) => {
+    setSelectedKey(newKey);
+    setSequenceBuffer([]);
+    setActiveNotes(new Set());
+    setIsRecording(false);
+  };
 
   // --- Audio Refs ---
   const audioCache = useRef<{ [filename: string]: HTMLAudioElement }>({});
 
   // --- Initialization ---
   useEffect(() => {
-    // Check initial screen width
     const checkWidth = () => {
       setIsSmallScreen(globalThis.innerWidth < 756);
     };
-
     checkWidth();
     globalThis.addEventListener("resize", checkWidth);
     return () => globalThis.removeEventListener("resize", checkWidth);
   }, []);
 
+
   useEffect(() => {
-    // Preload Audio
     notes.forEach((note) => {
       const audio = new Audio(note.filename);
       audio.preload = "auto";
@@ -86,67 +97,65 @@ const Piano = () => {
     }
   };
 
+  // --- Core Logic Functions ---
+  const clearBuffer = () => {
+    setSequenceBuffer([]);
+    setActiveNotes(new Set());
+    setIsRecording(false);
+  };
+
+  const playSequence = async () => {
+    if (sequenceBuffer.length === 0 || isPlaybackActive) return;
+    setIsPlaybackActive(true);
+    setIsRecording(false);
+
+    // Play all tones all at once as requested
+    sequenceBuffer.forEach(note => playSound(note.filename));
+
+    // Highlight all for a brief moment
+    const allActive = new Set(sequenceBuffer.map(n => n.name));
+    setActiveNotes(allActive);
+
+    await new Promise(resolve => setTimeout(resolve, 800));
+
+    setActiveNotes(new Set());
+    setIsPlaybackActive(false);
+  };
+
   const handleNoteTrigger = React.useCallback((note: Note, isPress: boolean) => {
     if (!isPress) {
-      setActiveNotes((prev) => {
-        const next = new Set(prev);
-        next.delete(note.name);
-        return next;
-      });
+      if (melodyMode) {
+        setActiveNotes(new Set());
+      }
       return;
     }
 
-    // Update Display Name
-    const cleanName = note.isBlack ? (note.sharp + "/" + note.flat) : note.name.replaceAll(/\d/g, '');
-    setLastNoteName(cleanName);
-
-    // Update Play Buffer (Rotating queue of last 8 unique notes)
-    setPlayBuffer(prev => {
-      const filtered = prev.filter(n => n.name !== note.name);
-      const next = [note, ...filtered].slice(0, 8);
-      return next;
-    });
-
-    // --- Play Logic ---
-    if (melodyMode) {
+    // Play sound immediately
+    if (melodyMode || !isRecording) {
       playSound(note.filename);
-      setActiveNotes((prev) => new Set(prev).add(note.name));
+      setActiveNotes(new Set([note.name]));
     } else {
-      const rootIndex = notes.findIndex((n) => n.name === note.name);
-      if (rootIndex !== -1) {
-        const indices = getChordIndices(rootIndex);
-        const notesToPlay = indices.map((i) => notes[i]).filter(Boolean);
-        notesToPlay.forEach((n) => playSound(n.filename));
-        setActiveNotes((prev) => {
-          const next = new Set(prev);
-          notesToPlay.forEach((n) => next.add(n.name));
-          return next;
-        });
+      // Chord Mode - Recording
+      if (sequenceBuffer.length < 8) {
+        setSequenceBuffer(prev => [...prev, note]);
+        playSound(note.filename);
+        setActiveNotes(prev => new Set(prev).add(note.name));
       }
     }
-  }, [melodyMode, notes]);
-
-  const playAllBuffered = () => {
-    playBuffer.forEach(note => playSound(note.filename));
-    const nextActive = new Set(playBuffer.map(n => n.name));
-    setActiveNotes(nextActive);
-    setTimeout(() => {
-      setActiveNotes(new Set());
-    }, 1000);
-  };
+  }, [melodyMode, isRecording, sequenceBuffer.length]);
 
   // --- Render Helpers ---
   const renderKeys = () => {
     const elements: React.ReactElement[] = [];
 
+    // We need to render keys properly. The notes array is now exactly 37 notes.
+    // We will render them in order.
     for (let i = 0; i < notes.length; i++) {
       const note = notes[i];
       if (note.isBlack) continue;
 
       const nextNote = notes[i + 1];
       const hasBlack = nextNote?.isBlack;
-
-      const isDimmed = scaleNotes.length > 0 && !scaleNotes.includes(note.name.replaceAll(/\d/g, ''));
       const degree = scaleDegrees.get(note.name.replaceAll(/\d/g, ''));
 
       elements.push(
@@ -154,40 +163,23 @@ const Piano = () => {
           <PianoKey
             note={note}
             isActive={activeNotes.has(note.name)}
-            isDimmed={isDimmed}
             showLabel={showNotes}
             degree={degree}
-            scaleNotes={scaleNotes}
             onMouseDown={() => handleNoteTrigger(note, true)}
             onMouseUp={() => handleNoteTrigger(note, false)}
             onMouseEnter={() => { }}
           />
 
           {hasBlack && (
-            <div
-              className="absolute top-0 -right-5 z-10"
-              style={{ pointerEvents: "none" }}
-            >
-              <div className="pointer-events-auto">
-                <PianoKey
-                  note={nextNote}
-                  isActive={activeNotes.has(nextNote.name)}
-                  isDimmed={
-                    scaleNotes.length > 0 &&
-                    !(
-                      scaleNotes.includes(nextNote.sharp!) ||
-                      scaleNotes.includes(nextNote.flat!)
-                    )
-                  }
-                  showLabel={showNotes}
-                  degree={scaleDegrees.get(nextNote.sharp!) || scaleDegrees.get(nextNote.flat!)}
-                  scaleNotes={scaleNotes}
-                  onMouseDown={() => handleNoteTrigger(nextNote, true)}
-                  onMouseUp={() => handleNoteTrigger(nextNote, false)}
-                  onMouseEnter={() => { }}
-                />
-              </div>
-            </div>
+            <PianoKey
+              note={nextNote}
+              isActive={activeNotes.has(nextNote.name)}
+              showLabel={showNotes}
+              degree={scaleDegrees.get(nextNote.sharp!) || scaleDegrees.get(nextNote.flat!)}
+              onMouseDown={() => handleNoteTrigger(nextNote, true)}
+              onMouseUp={() => handleNoteTrigger(nextNote, false)}
+              onMouseEnter={() => { }}
+            />
           )}
         </div>,
       );
@@ -226,149 +218,146 @@ const Piano = () => {
   }, [notes, handleNoteTrigger]);
 
   return (
-    <div className="w-full bg-[#0F5F85] p-6 rounded-xl flex flex-col gap-8 shadow-2xl">
+    <div className="w-full bg-[#0F5F85] p-6 rounded-xl flex flex-col gap-1 shadow-2xl min-h-[600px] relative">
       {/* --- Top Control Bar --- */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col lg:flex-row items-center justify-between px-4 lg:px-6 py-6 bg-[#0B4D6B] rounded-t-xl border-b border-white/10 shadow-lg gap-6 lg:gap-0">
+
         {/* Left: Modes & Actions */}
-        <div className="flex items-center gap-6">
-          {/* Mode Toggle */}
-          <div className="flex flex-col gap-1">
+        <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 w-full lg:w-auto justify-center">
+          <div className="flex flex-row gap-2 p-1.5 bg-black/20 rounded-lg border border-white/5 shadow-inner">
             <button
-              onClick={() => setMelodyMode(true)}
+              onClick={() => { setMelodyMode(true); clearBuffer(); }}
               className={cn(
-                "px-6 py-2 rounded-md font-bold text-sm transition-all border shadow-sm",
-                melodyMode
-                  ? "bg-white text-black border-transparent shadow-md transform scale-105"
-                  : "bg-[#2A7AA1] text-white border-[#4A9AC1] hover:bg-[#3A8AB1]",
+                "w-28 sm:w-32 lg:w-36 py-2 px-2 lg:px-4 rounded-md font-black text-xs lg:text-sm transition-all uppercase tracking-wider",
+                melodyMode ? "bg-white text-[#0F5F85] shadow-lg scale-105" : "text-white/40 hover:text-white"
               )}
             >
-              Melody Mode
+              Melody
             </button>
             <button
               onClick={() => setMelodyMode(false)}
               className={cn(
-                "px-6 py-2 rounded-md font-bold text-sm transition-all border shadow-sm",
-                melodyMode === false
-                  ? "bg-[#3b82f6] text-white border-transparent shadow-md transform scale-105"
-                  : "bg-[#2A7AA1] text-white border-[#4A9AC1] hover:bg-[#3A8AB1]",
+                "w-28 sm:w-32 lg:w-36 py-2 px-2 lg:px-4 rounded-md font-black text-xs lg:text-sm transition-all uppercase tracking-wider",
+                !melodyMode ? "bg-[#3B82F6] text-white shadow-lg scale-105" : "text-white/40 hover:text-white"
               )}
             >
-              Chord Mode
+              Chord
             </button>
           </div>
 
-          {/* Spell It (Visual Only) */}
-          <button className="h-14 w-14 rounded-full bg-[#D4AF37] border-4 border-[#B89628] flex items-center justify-center shadow-lg hover:scale-110 transition-transform active:scale-95">
-            <span className="text-[10px] font-bold text-black text-center leading-tight">
-              Spell It
-            </span>
-          </button>
+          {!melodyMode && (
+            <div className="flex items-center gap-3 lg:gap-4 animate-in fade-in slide-in-from-left-4 duration-300 ml-0 lg:ml-4">
+              {/* Spell It (Record) */}
+              <button
+                onClick={() => setIsRecording(!isRecording)}
+                className={cn(
+                  "h-12 w-12 lg:h-16 lg:w-16 rounded-full border-4 flex flex-col items-center justify-center transition-all shadow-xl group relative overflow-hidden",
+                  isRecording
+                    ? "bg-red-500 border-red-300 animate-pulse"
+                    : "bg-[#D4AF37] border-[#B89628] hover:scale-110 active:scale-95"
+                )}
+                title="Start Recording Notes"
+              >
+                <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="text-[8px] lg:text-[10px] font-black text-black leading-tight uppercase text-center px-1 z-10">
+                  Spell It
+                </div>
+              </button>
 
-          {/* Play It */}
-          <button
-            onClick={playAllBuffered}
-            className="h-14 w-14 relative hover:scale-110 transition-transform active:scale-95 flex items-center justify-center group"
-          >
-            <div
-              className="absolute inset-0 bg-[#D4AF37] border-4 border-[#B89628]"
-              style={{ clipPath: "polygon(0 0, 0% 100%, 100% 50%)" }}
-            ></div>
-            <svg
-              width="50"
-              height="50"
-              viewBox="0 0 100 100"
-              className="drop-shadow-lg filter overflow-visible z-10"
-            >
-              <path
-                d="M 10 10 L 10 90 L 90 50 Z"
-                fill="#D4AF37"
-                stroke="#9A7D20"
-                strokeWidth="4"
-              />
-              <text x="25" y="55" fontSize="12" fontWeight="bold" fill="black">
-                Play It
-              </text>
-            </svg>
-            {playBuffer.length > 0 && (
-              <div className="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white font-bold z-20">
-                {playBuffer.length}
-              </div>
-            )}
-          </button>
+              {/* Play It (Triangle) */}
+              <button
+                onClick={playSequence}
+                disabled={sequenceBuffer.length === 0 || isPlaybackActive}
+                className="h-12 w-12 lg:h-16 lg:w-16 relative transition-all hover:scale-110 active:scale-95 disabled:opacity-40 disabled:scale-100 group"
+                title="Play Stored Chord"
+              >
+                <div
+                  className="absolute inset-0 bg-[#D4AF37] border-4 border-[#B89628] shadow-xl origin-center transition-transform"
+                  style={{ clipPath: "polygon(10% 0, 10% 100%, 100% 50%)" }} // Better Triangle shape
+                />
+                <div
+                  className="absolute inset-0 bg-[#B89628] opacity-0 group-hover:opacity-20 transition-opacity"
+                  style={{ clipPath: "polygon(10% 0, 10% 100%, 100% 50%)" }}
+                />
+              </button>
+              <span className="hidden sm:inline text-white/50 text-xs font-bold uppercase tracking-widest -ml-2">Play It</span>
+
+              {/* Clear */}
+              <button
+                onClick={clearBuffer}
+                className="h-10 w-10 ml-2 rounded-md bg-slate-700/80 hover:bg-slate-600 flex items-center justify-center transition-all border border-white/10 hover:border-white/30 shadow-lg active:scale-95"
+                title="Clear Chord"
+              >
+                <Square className="text-white fill-current" size={16} />
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Center: Key Helpers */}
-        <div className="flex flex-col items-center">
-          <div className="bg-white px-8 py-2 rounded-md font-bold text-black border border-gray-300 shadow-inner min-w-[120px] text-center mb-1">
-            {lastNoteName}
-          </div>
-          <div className="text-white text-xs font-medium bg-[#2A7AA1] px-3 py-0.5 rounded-full">
-            Key of {selectedKey} Natural
-          </div>
+        {/* Center: Instruction / Header */}
+        <div className="flex flex-col items-center justify-center text-center order-first lg:order-none w-full lg:w-auto">
+          <h1 className="text-2xl lg:text-3xl font-black text-white uppercase tracking-tighter drop-shadow-md">
+            Key of {selectedKey}
+          </h1>
+          <p className="text-white/60 text-xs lg:text-sm font-medium tracking-wide mt-1">
+            {melodyMode ? "Play a melody freely" : "Build a chord & play it back"}
+          </p>
         </div>
 
-        {/* Far Right: Toggles */}
-        <div className="flex items-center gap-4">
+        {/* Right: Settings */}
+        <div className="flex items-center gap-4 w-full lg:w-auto justify-center">
           <button
             onClick={() => setShowNotes(!showNotes)}
-            className="bg-white px-4 py-2 rounded-md font-bold text-black shadow-sm hover:bg-gray-100 transition-colors"
+            className="bg-white/10 hover:bg-white/20 text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-lg font-bold shadow-sm transition-colors text-xs lg:text-sm border border-white/10 backdrop-blur-sm"
           >
             {showNotes ? "Hide Notes" : "Show Notes"}
           </button>
 
-          <div className="relative">
-            <select
-              value={selectedKey}
-              onChange={(e) => setSelectedKey(e.target.value)}
-              className="appearance-none bg-white px-6 py-2 pr-10 rounded-md font-bold text-black shadow-sm cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            >
-              {KEYS.map((k) => (
-                <option key={k} value={k}>
-                  {k}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
-          </div>
-        </div>
-      </div>
-
-      {/* --- Piano Roll --- */}
-      <div className="flex justify-center overflow-x-auto pb-4 pt-2 px-10 scrollbar-hide">
-        <div className="flex relative items-start h-[280px]">
-          {renderKeys()}
-        </div>
-      </div>
-
-      {/* --- Orientation Warning --- */}
-      {isSmallScreen && (
-        <div className="fixed inset-0 z-[100] bg-[#0F5F85]/95 backdrop-blur-md flex flex-col items-center justify-center p-8 text-center animate-in fade-in duration-300">
-          <div className="w-24 h-24 mb-6 relative">
-            <div className="absolute inset-0 border-4 border-[#D4AF37] rounded-xl opacity-20"></div>
-            <div className="absolute inset-0 flex items-center justify-center animate-bounce">
-              <svg
-                width="64"
-                height="64"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#D4AF37"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="rotate-90"
+          <div className="relative group">
+            <div className="flex items-center gap-2 bg-white px-4 lg:px-6 py-2 lg:py-2.5 rounded-lg border-2 border-transparent hover:border-white/20 shadow-lg cursor-pointer transition-all active:scale-95">
+              <span className="text-[#0B4D6B] font-black text-sm lg:text-lg uppercase tracking-wide">
+                {selectedKey} Loop
+              </span>
+              <ChevronDown className="h-5 w-5 text-[#0B4D6B]" />
+              <select
+                value={selectedKey}
+                onChange={(e) => handleKeyChange(e.target.value)}
+                className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
               >
-                <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
-                <line x1="12" y1="18" x2="12.01" y2="18" />
-              </svg>
-            </div>
-            <div className="absolute top-0 right-0 w-8 h-8 flex items-center justify-center bg-[#D4AF37] rounded-full shadow-lg -mr-2 -mt-2">
-              <span className="text-black font-bold">!</span>
+                {KEYS.map((k) => (
+                  <option key={k} value={k} className="text-black">{k}</option>
+                ))}
+              </select>
             </div>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Better Experience Awaits</h2>
-          <p className="text-[#4A9AC1] font-medium max-w-xs">
-            Please tilt your device to landscape mode for the best piano experience.
-          </p>
+        </div>
+
+      </div>
+
+      {/* --- Piano Roll (Canvas) --- */}
+      <div className="flex-1 bg-black/20 rounded-b-xl overflow-hidden flex flex-col border-t border-white/5">
+        <div className="flex-1 overflow-x-auto pb-4 scrollbar-hide">
+          <div className="flex relative justify-center items-start h-full min-w-max md:min-w-0 md:w-full px-4 lg:px-10 pt-4">
+            {renderKeys()}
+          </div>
+        </div>
+      </div>
+
+      {/* --- Mobile Landscape Warning (Persistent) --- */}
+      {isSmallScreen && (
+        <div className="fixed inset-0 z-[99999] bg-[#0F5F85] flex flex-col items-center justify-center p-8 text-center overscroll-none touch-none">
+          <div className="max-w-md w-full bg-white/10 backdrop-blur-lg p-10 rounded-3xl border border-white/20 shadow-2xl flex flex-col items-center">
+            <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-6 animate-pulse">
+              <Image src="/images/piano-middle.png" alt="Rotate" width={50} height={50} className="opacity-80 object-contain rotate-90" />
+            </div>
+            <h2 className="text-3xl font-black text-white mb-4 tracking-tight">Better Experience Awaits</h2>
+            <p className="text-white/80 font-medium text-lg leading-relaxed mb-6">
+              Please tilt your device to landscape mode to play the piano.
+            </p>
+            <div className="px-4 py-2 bg-white/20 rounded-full text-white/60 text-xs font-bold uppercase tracking-widest">
+              Rotate Device
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -376,3 +365,4 @@ const Piano = () => {
 };
 
 export default Piano;
+
