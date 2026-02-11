@@ -1,3 +1,4 @@
+// src/components/website/Common/piano/theory.ts
 export type Note = {
   name: string;
   sharp?: string;
