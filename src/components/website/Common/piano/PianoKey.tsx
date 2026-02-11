@@ -5,7 +5,7 @@ import { Note } from "./theory";
 interface PianoKeyProps {
   note: Note;
   isActive: boolean;
-  isDimmed?: boolean;
+  // isDimmed?: boolean;
   showLabel: boolean;
   degree?: number;
   scaleNotes?: string[]; // Names of notes in the selected scale
@@ -17,7 +17,7 @@ interface PianoKeyProps {
 const PianoKey: React.FC<PianoKeyProps> = ({
   note,
   isActive,
-  isDimmed = false,
+  // isDimmed = false,
   showLabel,
   degree,
   scaleNotes = [],
@@ -64,13 +64,13 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   return (
     <button
       type="button"
-      tabIndex={isDimmed ? -1 : 0}
+      // tabIndex={isDimmed ? -1 : 0}
       aria-label={`${note.isBlack ? (note.sharp + "/" + note.flat) : note.name} octave ${note.octave}`}
       aria-pressed={isActive}
       className={cn(
         isBlack ? blackKeyStyles : whiteKeyStyles,
         isActive && (isBlack ? activeBlackStyles : activeWhiteStyles),
-        isDimmed && dimmedStyles,
+        // isDimmed && dimmedStyles,
         "select-none cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-inset",
       )}
       onMouseDown={() => onMouseDown(note)}
