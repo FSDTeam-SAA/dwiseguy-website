@@ -102,7 +102,7 @@ export const ContactForm = memo(() => {
           {/* Left side: Form */}
           <motion.div className="order-2 lg:order-1" variants={itemVariants}>
             <h2 className="text-3xl md:text-4xl font-semibold mb-3 text-white">
-              Get in touch With Bao Music
+              Get in touch With The Baily Academy of Music
             </h2>
             <p className="text-white mb-10 text-lg">
               We are here to help you with any questions or concerns you may have.
