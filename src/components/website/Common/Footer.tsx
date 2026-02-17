@@ -137,48 +137,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    // <footer
-    //   className="w-full bg-[#3D3E40] py-4 border-t border-white/5"
-    //   role="contentinfo"
-    // >
-    //   <div className="container mx-auto px-6">
-    //     {/* Top Line: Logo and Navigation */}
-    //     <div className="flex flex-col md:flex-col justify-center items-center gap-4">
-    //       <div className="flex flex-col md:flex-row justify-between items-center gap-4 pb-4 border-b border-white/5">
-    //         <Link href="/" className="opacity-80 hover:opacity-100 transition-opacity">
-    //           <Image
-    //             src="/images/footerlogo.png"
-    //             alt="Logo"
-    //             width={100}
-    //             height={50}
-    //             className="h-auto w-24"
-    //           />
-    //         </Link>
-    //       </div>
-    //       <div className="flex flex-col md:flex-row justify-between items-center gap-4 pb-4 border-b border-white/5">
-
-    //       <Image src="/images/BAoM_Tag.png" alt="Logo" width={100} height={100} className="h-full w-full" />
-    //       </div>
-
-    //       <div className="flex flex-col md:flex-row justify-between items-center gap-4 pb-4 border-b border-white/5">
-
-    //         <nav className="flex items-center gap-6">
-    //           <Link href="/about" className="text-white/60 hover:text-white text-xs transition-colors">About</Link>
-    //           <Link href="/contact" className="text-white/60 hover:text-white text-xs transition-colors">Contact</Link>
-    //           <Link href="/privacy" className="text-white/60 hover:text-white text-xs transition-colors">Privacy</Link>
-    //         </nav>
-
-
-    //       </div>
-
-    //     </div>
-    //     {/* Bottom Line: Copyright */}
-    //     <div className="pt-3 flex justify-center items-center text-[10px] text-gray-500 uppercase tracking-widest">
-    //       <p>© {currentYear} The Baily Academy of Music. All rights reserved.</p>
-    //     </div>
-    //   </div>
-    // </footer>
-
+    
     <footer className="w-full bg-[#3D3E40] py-4 border-t border-white/5" role="contentinfo">
       <div className="container mx-auto px-6">
         <div className="flex flex-col justify-center items-center gap-4">
@@ -198,10 +157,10 @@ const Footer = () => {
 
           {/* FULL WIDTH IMAGE WITH MOTION ANIMATION */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }} // শুরুতে অদৃশ্য এবং নিচে থাকবে
-            whileInView={{ opacity: 1, y: 0 }} // স্ক্রিনে আসলে দেখা যাবে
-            transition={{ duration: 0.8, ease: "easeOut" }} // এনিমেশনের গতি
-            viewport={{ once: true }} // শুধু একবার এনিমেট হবে
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, ease: "easeOut" }} 
+            viewport={{ once: true }} 
             className="w-full pb-4 border-b border-white/5"
           >
             <Image

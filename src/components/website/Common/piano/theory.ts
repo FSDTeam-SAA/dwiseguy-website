@@ -8,37 +8,37 @@ export type Note = {
   octave: number;
 };
 
-// Base notes for one octave
+// Base notes for one octave - Flat priority for Senior Specs
 const BASE_NOTES = [
   { name: "C", isBlack: false },
-  { name: "C#", sharp: "C#", flat: "Db", isBlack: true },
+  { name: "Db", sharp: "C#", flat: "Db", isBlack: true },
   { name: "D", isBlack: false },
-  { name: "D#", sharp: "D#", flat: "Eb", isBlack: true },
+  { name: "Eb", sharp: "D#", flat: "Eb", isBlack: true },
   { name: "E", isBlack: false },
   { name: "F", isBlack: false },
-  { name: "F#", sharp: "F#", flat: "Gb", isBlack: true },
+  { name: "Gb", sharp: "F#", flat: "Gb", isBlack: true },
   { name: "G", isBlack: false },
-  { name: "G#", sharp: "G#", flat: "Ab", isBlack: true },
+  { name: "Ab", sharp: "G#", flat: "Ab", isBlack: true },
   { name: "A", isBlack: false },
-  { name: "A#", sharp: "A#", flat: "Bb", isBlack: true },
+  { name: "Bb", sharp: "A#", flat: "Bb", isBlack: true },
   { name: "B", isBlack: false },
 ];
 
 /**
- * Generate exactly 37 notes starting from the selected rootKey.
- * This physically shifts the keyboard so the rootKey is the first key on the left.
+ * Generate a master pool of notes from C1 to C6 (Professional Range).
+ * Returns exactly 37 notes starting from the rootKey.
  */
 export const generateNotes = (rootKey: string): Note[] => {
-  // Extract base note if rootKey is a dual name (e.g., "C# / Db" -> "C#")
+  // Extract base note if rootKey is a dual name (e.g., "Db / C#" -> "Db")
   const baseRoot = rootKey.split(" / ")[0];
 
   const masterPool: Note[] = [];
   const startOctave = 1;
-  const endOctave = 7;
+  const endOctave = 7; // Generate up to 7 to ensure we can always slice 37 from any root in C1-C4
 
-  // Generate a broad pool across multiple octaves
   for (let oct = startOctave; oct <= endOctave; oct++) {
     BASE_NOTES.forEach((base) => {
+      // Map to flat name for file consistency (e.g., Db1.mp3)
       const fileNoteName = base.flat || base.name;
       const filename = `/music/mp3/${fileNoteName}${oct}.mp3`;
 
@@ -46,23 +46,30 @@ export const generateNotes = (rootKey: string): Note[] => {
         ...base,
         octave: oct,
         filename,
-        name: `${base.name}${oct}`,
+        name: base.isBlack ? `${base.flat}${oct}` : `${base.name}${oct}`,
         sharp: base.sharp,
         flat: base.flat,
       });
     });
   }
 
-  // Find the first occurrence of the rootKey (preferably in middle range)
+  // Find the first occurrence of the rootKey in the professional range (starting C1)
   let startIndex = masterPool.findIndex((n) => {
     const nDisplay = [n.name.replace(/\d/, ""), n.sharp, n.flat];
-    return nDisplay.includes(baseRoot) && n.octave >= 2;
+    return nDisplay.includes(baseRoot);
   });
 
   if (startIndex === -1) startIndex = 0;
 
-  // Return exactly 37 notes
-  return masterPool.slice(startIndex, startIndex + 37);
+  // Return exactly 37 notes to maintain consistent keyboard width
+  // Ensure we prefer ending on a white key if possible (visual symmetry)
+  const slice = masterPool.slice(startIndex, startIndex + 37);
+
+  // Optional: Visual Symmetry Adjustment
+  // If the 37th note is black, we could technically extend to 38, 
+  // but requirements specify 'exactly 37'.
+
+  return slice;
 };
 
 // Intervals (semitones)
@@ -73,16 +80,16 @@ const SCALES_INTERVALS: { [key: string]: number[] } = {
 
 export const KEYS = [
   "C",
-  "C# / Db",
+  "Db / C#",
   "D",
-  "D# / Eb",
+  "Eb / D#",
   "E",
   "F",
-  "F# / Gb",
+  "Gb / F#",
   "G",
-  "G# / Ab",
+  "Ab / G#",
   "A",
-  "A# / Bb",
+  "Bb / A#",
   "B",
 ];
 
