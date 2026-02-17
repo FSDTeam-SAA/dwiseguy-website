@@ -71,13 +71,30 @@ const Piano = () => {
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
   // --- Audio Logic & Hard Stop ---
-  const audioCache = useRef<{ [filename: string]: HTMLAudioElement }>({});
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const audioBuffersRef = useRef<{ [filename: string]: AudioBuffer }>({});
+  const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
+
+  // Ensure AudioContext is initialized and resumed
+  const ensureAudioContext = React.useCallback(async () => {
+    audioContextRef.current ??= new (globalThis.AudioContext ||
+      (globalThis as unknown as Window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+
+    if (audioContextRef.current.state === "suspended") {
+      await audioContextRef.current.resume();
+    }
+    return audioContextRef.current;
+  }, []);
 
   const audioHardStop = () => {
-    Object.values(audioCache.current).forEach((audio) => {
-      audio.pause();
-      audio.currentTime = 0;
+    activeSourcesRef.current.forEach((source) => {
+      try {
+        source.stop();
+      } catch {
+        // Source might have already stopped
+      }
     });
+    activeSourcesRef.current.clear();
   };
 
   const handleKeyChange = (newKey: string) => {
@@ -98,25 +115,63 @@ const Piano = () => {
     return () => globalThis.removeEventListener("resize", checkWidth);
   }, []);
 
+  // Preloading Logic
   useEffect(() => {
-    notes.forEach((note) => {
-      if (!audioCache.current[note.filename]) {
-        const audio = new Audio(note.filename);
-        audio.preload = "auto";
-        audioCache.current[note.filename] = audio;
-      }
-    });
+    const loadNotes = async () => {
+      // We don't need to resume context here, just create it if it doesn't exist
+      audioContextRef.current ??= new (globalThis.AudioContext ||
+        (globalThis as unknown as Window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+
+      const ctx = audioContextRef.current;
+
+      const loadPromises = notes.map(async (note) => {
+        if (audioBuffersRef.current[note.filename]) return;
+
+        try {
+          const response = await fetch(note.filename);
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await ctx.decodeAudioData(arrayBuffer);
+          audioBuffersRef.current[note.filename] = audioBuffer;
+        } catch (e) {
+          console.error(`Failed to load/decode audio: ${note.filename}`, e);
+        }
+      });
+
+      await Promise.all(loadPromises);
+    };
+
+    loadNotes();
   }, [notes]);
 
-  const playSound = (filename: string) => {
-    const audio = audioCache.current[filename];
-    if (audio) {
-      // For simultaneous playback, we use a clone to avoid blocking
-      const sound = audio.cloneNode() as HTMLAudioElement;
-      sound.volume = 0.6;
-      sound.play().catch((e) => console.error("Audio play failed", e));
+  const playSound = React.useCallback(async (filename: string, startTime: number = 0) => {
+    const ctx = await ensureAudioContext();
+    const buffer = audioBuffersRef.current[filename];
+
+    if (buffer) {
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+
+      const gainNode = ctx.createGain();
+      // Target volume 0.85
+      const targetVolume = 0.85;
+
+      // prevent "clicking" or "popping" (Derek's request)
+      const now = startTime || ctx.currentTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(targetVolume, now + 0.005);
+
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
+
+      // Track active source for Panic button
+      activeSourcesRef.current.add(source);
+      source.onended = () => {
+        activeSourcesRef.current.delete(source);
+      };
+
+      source.start(now);
     }
-  };
+  }, [ensureAudioContext]);
 
   // --- Core Logic Functions ---
   const clearBuffer = () => {
@@ -131,8 +186,11 @@ const Piano = () => {
     setIsPlaybackActive(true);
     setIsRecording(false);
 
+    const ctx = await ensureAudioContext();
+    const startTime = ctx.currentTime + 0.05; // Small offset for tightness
+
     // Play all notes in the buffer simultaneously (Chord Mode)
-    sequenceBuffer.forEach((note) => playSound(note.filename));
+    sequenceBuffer.forEach((note) => playSound(note.filename, startTime));
 
     // Highlight all associated keys in blue
     const allActive = new Set(sequenceBuffer.map((n) => n.name));
@@ -165,7 +223,7 @@ const Piano = () => {
         setActiveNotes((prev) => new Set(prev).add(note.name));
       }
     },
-    [melodyMode, isRecording, sequenceBuffer.length],
+    [melodyMode, isRecording, sequenceBuffer.length, playSound],
   );
 
   // --- Render Helpers ---
@@ -176,13 +234,14 @@ const Piano = () => {
       const note = notes[i];
       if (note.isBlack) continue;
 
+      // Find the next note if it's black (Skeuomorphic sibling anchoring)
       const nextNote = notes[i + 1];
       const hasBlack = nextNote?.isBlack;
       const strippedName = note.name.replaceAll(/\d/g, "");
       const degree = scaleDegrees.get(strippedName);
 
       elements.push(
-        <div key={note.name} className="relative flex-shrink-0">
+        <div key={note.name} className="relative flex-1 min-w-[80px] lg:min-w-0 flex shrink-0">
           <PianoKey
             note={note}
             isActive={activeNotes.has(note.name)}
@@ -190,7 +249,7 @@ const Piano = () => {
             degree={degree}
             onMouseDown={() => handleNoteTrigger(note, true)}
             onMouseUp={() => handleNoteTrigger(note, false)}
-            onMouseEnter={() => {}}
+            onMouseEnter={() => { }}
           />
 
           {hasBlack && (
@@ -204,7 +263,7 @@ const Piano = () => {
               }
               onMouseDown={() => handleNoteTrigger(nextNote, true)}
               onMouseUp={() => handleNoteTrigger(nextNote, false)}
-              onMouseEnter={() => {}}
+              onMouseEnter={() => { }}
             />
           )}
         </div>,
@@ -348,7 +407,7 @@ const Piano = () => {
         <div className="flex flex-col  items-center gap-4 w-full lg:w-auto justify-center">
           <button
             onClick={() => setShowNotes(!showNotes)}
-            className="bg-white/10 hover:bg-white/20 text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-lg font-bold shadow-sm transition-colors text-xs lg:text-sm border border-white/10 backdrop-blur-sm"
+            className="bg-white/10 justify-center hover:bg-white/20 text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-lg font-bold shadow-sm transition-colors text-xs lg:text-sm border border-white/10 backdrop-blur-sm"
           >
             {showNotes ? "Hide Notes" : "Show Notes"}
           </button>
@@ -376,9 +435,9 @@ const Piano = () => {
       </div>
 
       {/* --- Piano Roll --- */}
-      <div className="flex-1 bg-black/20 rounded-b-xl overflow-hidden flex flex-col border-t border-white/5">
+      <div className="flex-1 bg-[#093d56] rounded-b-xl overflow-hidden flex flex-col">
         <div className="flex-1 overflow-x-auto pb-4 scrollbar-hide">
-          <div className="flex relative justify-start items-start h-full px-4 lg:px-10 pt-4">
+          <div className="flex relative justify-start items-start h-full w-full min-w-max lg:min-w-0 bg-[#093d56]">
             {renderKeys()}
           </div>
         </div>
@@ -415,224 +474,3 @@ const Piano = () => {
 
 export default Piano;
 
-// "use client";
-
-// import React, { useState, useEffect, useRef, useMemo } from "react";
-// import { ChevronDown, Square } from "lucide-react";
-// import { cn } from "@/lib/utils";
-// import { generateNotes, getScaleInfo, KEYS, Note } from "./theory";
-// import PianoKey from "./PianoKey";
-
-// // const KEY_TO_NOTE_INDEX: { [key: string]: number } = {
-// //   a: 0, w: 1, s: 2, e: 3, d: 4, f: 5, t: 6, g: 7, y: 8, h: 9, u: 10, j: 11,
-// //   k: 12, o: 13, l: 14, p: 15, ";": 16, "'": 17,
-// // };
-// const KEY_TO_NOTE_INDEX: { [key: string]: number } = {
-//   a: 0,
-//   w: 1,
-//   s: 2,
-//   e: 3,
-//   d: 4,
-//   f: 5,
-//   t: 6,
-//   g: 7,
-//   y: 8,
-//   h: 9,
-//   u: 10,
-//   j: 11,
-//   k: 12,
-//   o: 13,
-//   l: 14,
-//   p: 15,
-//   ";": 16,
-//   "'": 17,
-// };
-
-// const Piano = () => {
-//   const [selectedKey, setSelectedKey] = useState<string>("C");
-//   // const notes = useMemo(() => generateNotes(selectedKey), [selectedKey]);
-//   // const { notes: scaleNotes, degrees: scaleDegrees } = useMemo(
-//   //   () => getScaleInfo(selectedKey, "Major"),
-//   //   [selectedKey]
-//   // );
-
-// const notes = useMemo(() => {
-//   // 1. Get the standard 12-note chromatic starting from C
-//   const baseChromatic = generateNotes("C").slice(0, 12);
-
-//   // 2. Find the index of the selected key to "rotate" the starting point
-//   const startIndex = baseChromatic.findIndex(n =>
-//     n.name.includes(selectedKey) || n.sharp === selectedKey || n.flat === selectedKey
-//   );
-
-//   // 3. Reorder the chromatic scale starting from the selectedKey
-//   const rotatedChromatic = [
-//     ...baseChromatic.slice(startIndex),
-//     ...baseChromatic.slice(0, startIndex)
-//   ];
-
-//   // 4. Expand this to 37 notes (3 full octaves + the root again)
-//   const fullRange: Note[] = [];
-//   for (let i = 0; i < 37; i++) {
-//     const baseNote = rotatedChromatic[i % 12];
-//     const octaveOffset = Math.floor(i / 12);
-
-//     fullRange.push({
-//       ...baseNote,
-//       // Update the name to reflect the octave (e.g., C1, C2, C3)
-//       name: `${baseNote.name.replace(/\d/, '')}${octaveOffset + 1}`
-//     });
-//   }
-
-//   return fullRange;
-// }, [selectedKey]);
-
-// const { notes: scaleNotes, degrees: scaleDegrees } = useMemo(
-//   () => getScaleInfo(selectedKey, "Major"),
-//   [selectedKey]
-// );
-
-//   const [melodyMode, setMelodyMode] = useState<boolean>(true);
-//   const [showNotes, setShowNotes] = useState<boolean>(true);
-//   const [activeNotes, setActiveNotes] = useState<Set<string>>(new Set());
-//   const [sequenceBuffer, setSequenceBuffer] = useState<Note[]>([]);
-//   const [isRecording, setIsRecording] = useState(false);
-//   const [isPlaybackActive, setIsPlaybackActive] = useState(false);
-//   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
-
-//   const audioCache = useRef<{ [filename: string]: HTMLAudioElement }>({});
-
-//   useEffect(() => {
-//     const checkWidth = () => setIsSmallScreen(globalThis.innerWidth < 756);
-//     checkWidth();
-//     globalThis.addEventListener("resize", checkWidth);
-//     return () => globalThis.removeEventListener("resize", checkWidth);
-//   }, []);
-
-//   useEffect(() => {
-//     notes.forEach((note) => {
-//       const audio = new Audio(note.filename);
-//       audio.preload = "auto";
-//       audioCache.current[note.filename] = audio;
-//     });
-//   }, [notes]);
-
-//   const playSound = (filename: string) => {
-//     const audio = audioCache.current[filename];
-//     if (audio) {
-//       const sound = audio.cloneNode() as HTMLAudioElement;
-//       sound.volume = 0.6;
-//       sound.play().catch((e) => console.error("Audio play failed", e));
-//     }
-//   };
-
-//   const clearBuffer = () => {
-//     setSequenceBuffer([]);
-//     setActiveNotes(new Set());
-//     setIsRecording(false);
-//   };
-
-//   const playSequence = async () => {
-//     if (sequenceBuffer.length === 0 || isPlaybackActive) return;
-//     setIsPlaybackActive(true);
-//     setIsRecording(false);
-//     sequenceBuffer.forEach(note => playSound(note.filename));
-//     setActiveNotes(new Set(sequenceBuffer.map(n => n.name)));
-//     await new Promise(resolve => setTimeout(resolve, 800));
-//     setActiveNotes(new Set());
-//     setIsPlaybackActive(false);
-//   };
-
-//   const handleNoteTrigger = React.useCallback((note: Note, isPress: boolean) => {
-//     if (!isPress) {
-//       if (melodyMode) setActiveNotes(new Set());
-//       return;
-//     }
-
-//     const isInScale = scaleNotes.includes(note.name.replaceAll(/\d/g, '')) ||
-//                       scaleNotes.includes(note.sharp || '') ||
-//                       scaleNotes.includes(note.flat || '');
-
-//     if (melodyMode || !isRecording) {
-//       playSound(note.filename);
-//       setActiveNotes(new Set([note.name]));
-//     } else if (isRecording && sequenceBuffer.length < 8) {
-//       setSequenceBuffer(prev => [...prev, note]);
-//       playSound(note.filename);
-//       setActiveNotes(prev => new Set(prev).add(note.name));
-//     }
-//   }, [melodyMode, isRecording, sequenceBuffer.length, scaleNotes]);
-
-//   return (
-//     <div className="w-full bg-[#0F5F85] p-4 lg:p-6 rounded-xl flex flex-col shadow-2xl min-h-[500px] relative overflow-hidden">
-//       {/* Top Bar */}
-//       <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 bg-[#0B4D6B] p-4 rounded-lg">
-//         <div className="flex items-center gap-2">
-//           <button
-//             onClick={() => { setMelodyMode(true); clearBuffer(); }}
-//             className={cn("px-4 py-2 rounded font-bold text-xs uppercase", melodyMode ? "bg-white text-blue-900" : "text-white/50")}
-//           >Melody</button>
-//           <button
-//             onClick={() => setMelodyMode(false)}
-//             className={cn("px-4 py-2 rounded font-bold text-xs uppercase", !melodyMode ? "bg-blue-500 text-white" : "text-white/50")}
-//           >Chord</button>
-//         </div>
-
-//         {!melodyMode && (
-//           <div className="flex items-center gap-4">
-//             <button onClick={() => setIsRecording(!isRecording)} className={cn("h-12 w-12 rounded-full border-4 flex items-center justify-center text-[10px] font-bold uppercase", isRecording ? "bg-red-500 animate-pulse" : "bg-yellow-500")}>Spell It</button>
-//             <button onClick={playSequence} disabled={sequenceBuffer.length === 0} className="h-12 w-12 bg-yellow-500" style={{ clipPath: "polygon(10% 0, 10% 100%, 100% 50%)" }} />
-//             <button onClick={clearBuffer} className="p-2 bg-slate-700 rounded"><Square size={16} className="text-white fill-current" /></button>
-//           </div>
-//         )}
-
-//         <div className="flex items-center gap-4">
-//           <button onClick={() => setShowNotes(!showNotes)} className="text-white text-xs border border-white/20 px-3 py-1 rounded"> {showNotes ? "Hide Notes" : "Show Notes"} </button>
-//           <select value={selectedKey} onChange={(e) => setSelectedKey(e.target.value)} className="bg-white text-black font-bold rounded px-2 py-1 text-sm">
-//             {KEYS.map(k => <option key={k} value={k}>{k}</option>)}
-//           </select>
-//         </div>
-//       </div>
-
-//       {/* Piano Engine */}
-//       <div className="flex-1 overflow-x-auto pb-8 scrollbar-hide">
-//         <div className="flex relative justify-start md:justify-center min-w-max h-full pt-4">
-//           {notes.map((note, i) => {
-//             if (note.isBlack) return null;
-//             const nextNote = notes[i + 1];
-//             const hasBlack = nextNote?.isBlack;
-//             const degree = scaleDegrees.get(note.name.replaceAll(/\d/g, ''));
-//             const isDimmed = scaleNotes.length > 0 && !scaleNotes.includes(note.name.replaceAll(/\d/g, ''));
-
-//             return (
-//               <div key={note.name} className="relative flex-shrink-0">
-//                 <PianoKey
-//                   note={note}
-//                   isActive={activeNotes.has(note.name)}
-//                   isDimmed={isDimmed}
-//                   showLabel={showNotes}
-//                   degree={degree}
-//                   onMouseDown={() => handleNoteTrigger(note, true)}
-//                   onMouseUp={() => handleNoteTrigger(note, false)}
-//                 />
-//                 {hasBlack && (
-//                   <PianoKey
-//                     note={nextNote}
-//                     isActive={activeNotes.has(nextNote.name)}
-//                     isDimmed={scaleNotes.length > 0 && !scaleNotes.includes(nextNote.sharp!) && !scaleNotes.includes(nextNote.flat!)}
-//                     showLabel={showNotes}
-//                     degree={scaleDegrees.get(nextNote.sharp!) || scaleDegrees.get(nextNote.flat!)}
-//                     onMouseDown={() => handleNoteTrigger(nextNote, true)}
-//                     onMouseUp={() => handleNoteTrigger(nextNote, false)}
-//                   />
-//                 )}
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Piano;
