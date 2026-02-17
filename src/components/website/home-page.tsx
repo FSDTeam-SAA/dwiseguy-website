@@ -66,7 +66,7 @@ export default function HomePage() {
               animate="visible"
               exit="exit"
             >
-              <Doublebutton />
+              {/* <Doublebutton /> */}
             </motion.div>
           )}
 
