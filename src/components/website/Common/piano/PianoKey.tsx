@@ -1,6 +1,6 @@
 // src/components/website/Common/piano/PianoKey.tsx
 import React from "react";
-import { cn } from "@/lib/utils"; // Assuming generic utility exists, or I will use standard class concatenation
+import { cn } from "@/lib/utils";
 import { Note } from "./theory";
 
 interface PianoKeyProps {
@@ -24,16 +24,27 @@ const PianoKey: React.FC<PianoKeyProps> = ({
 }) => {
   const isBlack = note.isBlack;
 
-  // Physical layout: White keys provide the base, Black keys overlap the seam
-  const whiteKeyStyles =
-    "h-64 md:h-80 2xl:h-[450px] w-14 md:w-[4.54vw] 2xl:w-16 bg-white border-r border-gray-300 z-0 relative hover:bg-gray-50 flex flex-col justify-end items-center pb-4 md:pb-8 2xl:pb-12 text-black font-black text-xl md:text-2xl 2xl:text-3xl transition-colors duration-75 shrink-0 shadow-sm";
-  const blackKeyStyles =
-    "h-40 md:h-52 2xl:h-[280px] w-9 md:w-[3vw] 2xl:w-12 bg-black absolute z-10 rounded-b-lg flex flex-col justify-center items-center text-white shadow-2xl transition-all duration-75 left-full -translate-x-1/2 top-0";
+  // Senior Engineer Specs: Physical Proportion Refactor
+  // White Key: w-24 (96px) / h-64 (256px) - 4:1 Ratio
+  const whiteKeyStyles = cn(
+    "relative z-0 flex flex-col justify-end items-center transition-all duration-100 shrink-0",
+    "w-24 h-64 md:h-72 lg:flex-1 lg:w-auto",
+    "bg-gradient-to-b from-white via-[#F9FAFB] to-[#E5E7EB]", // Professional Gradation
+    "border-r border-b border-gray-400 rounded-b-[4px]", // Hardware edge
+    "hover:brightness-105 active:brightness-95",
+  );
 
-  // Active highlights (Blue)
-  const activeWhiteStyles =
-    "!bg-blue-100 !border-blue-300 shadow-inner scale-[0.99] origin-top";
-  const activeBlackStyles = "!bg-blue-900 shadow-inner scale-[0.98] origin-top";
+  // Black Key: 60% height and width of White Key
+  const blackKeyStyles = cn(
+    "absolute z-10 top-0 left-full -translate-x-1/2 rounded-b-md flex flex-col justify-end items-center transition-all duration-100",
+    "w-[60%] h-[60%]", // Precise Scaling
+    "bg-gradient-to-b from-[#444] to-black",
+    "shadow-[0_8px_10px_rgba(0,0,0,0.6)]", // Skeuomorphic depth
+  );
+
+  // Tactile "Press" depth Feedback
+  const activeWhiteStyles = "scale-[0.98] shadow-inner bg-gradient-to-b from-gray-100 to-gray-200 z-0";
+  const activeBlackStyles = "scale-[0.96] shadow-inner bg-gradient-to-b from-[#222] to-black z-20";
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.repeat) return;
@@ -58,7 +69,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       className={cn(
         isBlack ? blackKeyStyles : whiteKeyStyles,
         isActive && (isBlack ? activeBlackStyles : activeWhiteStyles),
-        "select-none cursor-pointer focus:outline-none transition-all duration-75 group",
+        "select-none cursor-pointer focus:outline-none group overflow-visible",
       )}
       onMouseDown={() => onMouseDown(note)}
       onMouseUp={() => onMouseUp(note)}
@@ -67,44 +78,30 @@ const PianoKey: React.FC<PianoKeyProps> = ({
       onKeyDown={handleKeyDown}
       onKeyUp={handleKeyUp}
     >
-      {showLabel && (
-        <div className="pointer-events-none flex flex-col items-center w-full h-full justify-end pb-4 gap-2">
-          {/* Degree Indicator - Yellow Circle, only if note is in scale */}
-          {degree && (
-            <div className="w-8 h-8 rounded-full bg-yellow-400 border-2 border-yellow-600 flex items-center justify-center shadow-md animate-in fade-in zoom-in-50 duration-200 mb-1">
-              <span className="text-black text-sm font-extrabold leading-none">
-                {degree}
-              </span>
-            </div>
-          )}
-
-          {isBlack ? (
-            <div className="flex flex-col items-center gap-1 mb-6 scale-90 text-white/90">
-              <div className="flex items-start">
-                <span className="text-lg font-black leading-none">
-                  {note.sharp?.charAt(0)}
-                </span>
-                <span className="text-[10px] font-bold leading-none mt-0.5">
-                  #
-                </span>
-              </div>
-              <div className="w-3 h-px bg-white/20 my-0.5"></div>
-              <div className="flex items-start">
-                <span className="text-lg font-black leading-none">
-                  {note.flat?.charAt(0)}
-                </span>
-                <span className="text-[10px] font-bold leading-none mt-0.5">
-                  b
-                </span>
-              </div>
-            </div>
-          ) : (
-            <span className="text-xl font-extrabold tracking-tight mb-2 opacity-80">
-              {note.name.replaceAll(/\d/g, "")}
+      {/* Visual Alignment Container */}
+      <div className="pointer-events-none flex flex-col items-center w-full h-full justify-end pb-2 gap-3">
+        {/* Scale Degree - Only if note is in scale */}
+        {degree && (
+          <div className={cn(
+            "rounded-full bg-yellow-400 border border-yellow-600 flex items-center justify-center shadow-lg animate-in fade-in zoom-in-50",
+            isBlack ? "w-6 h-6 mb-4" : "w-8 h-8 mb-2"
+          )}>
+            <span className={cn("text-black font-extrabold", isBlack ? "text-[10px]" : "text-sm")}>
+              {degree}
             </span>
-          )}
-        </div>
-      )}
+          </div>
+        )}
+
+        {/* Minimalist Labeling at the very bottom edge */}
+        {showLabel && (
+          <div className={cn(
+            "font-black tracking-tighter text-gray-500 uppercase",
+            isBlack ? "text-[10px] mb-3" : "text-xs mb-2"
+          )}>
+            <span>{note.name.replace(/\d/, "")}</span>
+          </div>
+        )}
+      </div>
     </button>
   );
 };

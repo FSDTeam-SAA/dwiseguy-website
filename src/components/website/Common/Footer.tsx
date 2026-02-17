@@ -131,52 +131,61 @@ import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer
-      className="w-full bg-[#3D3E40] py-4 border-t border-white/5" 
-      role="contentinfo"
-    >
+    
+    <footer className="w-full bg-[#3D3E40] py-4 border-t border-white/5" role="contentinfo">
       <div className="container mx-auto px-6">
-        {/* Top Line: Logo and Navigation */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 pb-4 border-b border-white/5">
-          <Link href="/" className="opacity-80 hover:opacity-100 transition-opacity">
-            <Image
-              src="/images/footerlogo.png"
-              alt="Logo"
-              width={100} // Smaller logo
-              height={50}
-              className="h-auto w-24"
-            />
-          </Link>
-          
-          <nav className="flex items-center gap-6">
-            <Link href="/about" className="text-white/60 hover:text-white text-xs transition-colors">About</Link>
-            <Link href="/contact" className="text-white/60 hover:text-white text-xs transition-colors">Contact</Link>
-            <Link href="/privacy" className="text-white/60 hover:text-white text-xs transition-colors">Privacy</Link>
-          </nav>
+        <div className="flex flex-col justify-center items-center gap-4">
 
-          {/* Compact Contact Info */}
-          <div className="hidden lg:flex items-center gap-4 text-white/40 text-[10px]">
-            <div className="flex items-center gap-1">
-              <Mail size={12} /> <span>example@gmail.com</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Phone size={12} /> <span>11122233344</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MapPin size={12} /> <span>example address</span>
-            </div>
+          {/* Logo Section */}
+          <div className="flex justify-center items-center pb-4 border-b border-white/5 w-full">
+            <Link href="/" className="opacity-80 hover:opacity-100 transition-opacity">
+              <Image
+                src="/images/footerlogo.png"
+                alt="Logo"
+                width={100}
+                height={50}
+                className="h-auto w-24"
+              />
+            </Link>
+          </div>
+
+          {/* FULL WIDTH IMAGE WITH MOTION ANIMATION */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.8, ease: "easeOut" }} 
+            viewport={{ once: true }} 
+            className="w-full pb-4 border-b border-white/5"
+          >
+            <Image
+              src="/images/BAoM_Tag.png"
+              alt="BAoM Tag"
+              width={1400}
+              height={300}
+              priority
+              className="w-full h-auto object-contain"
+            />
+          </motion.div>
+
+          {/* Navigation Links */}
+          <div className="flex justify-center items-center pb-4 border-b border-white/5 w-full">
+            <nav className="flex items-center gap-6">
+              <Link href="/about" className="text-white/60 hover:text-white text-xs transition-colors">About</Link>
+              <Link href="/contact" className="text-white/60 hover:text-white text-xs transition-colors">Contact</Link>
+              <Link href="/privacy" className="text-white/60 hover:text-white text-xs transition-colors">Privacy</Link>
+            </nav>
           </div>
         </div>
 
         {/* Bottom Line: Copyright */}
         <div className="pt-3 flex justify-center items-center text-[10px] text-gray-500 uppercase tracking-widest">
-          <p>© {currentYear} The Baily Academy of Music. All rights reserved.</p>
-          {/* <p className="hidden md:block italic">Making piano learning accessible.</p> */}
+          <p>© {new Date().getFullYear()} The Baily Academy of Music. All rights reserved.</p>
         </div>
       </div>
     </footer>
