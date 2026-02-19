@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Lock, DotIcon, ChevronLeft } from 'lucide-react';
+import { Lock, DotIcon, ChevronLeft, ArrowLeft } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 
@@ -28,14 +29,22 @@ const staticInstruments = [
 ];
 
 const Bandstandpage = () => {
+    const router = useRouter();
     return (
         <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
             <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md">
 
+                <button
+                    onClick={() => router.back()}
+                    className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    <span>Back</span>
+                </button>
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
                     <div className="flex items-start justify-start gap-2">
-                        <ChevronLeft className="w-10 h-10" />
+                        {/* <ChevronLeft className="w-10 h-10" /> */}
                         <h2 className="text-4xl text-primary font-bold mb-4">Band Stand</h2>
                         {/* <p className="text-lg font-semibold mb-4">Explore the world of music with our virtual instruments.</p> */}
                     </div>

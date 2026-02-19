@@ -2,8 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Loader2, AlertCircle } from "lucide-react";
-import { useParams } from "next/navigation";
+import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useGetAllModules } from "../hooks/useGetAllModules";
 import { Module as ModuleType } from "../types/module.types";
@@ -11,6 +11,7 @@ import Link from "next/link";
 
 const Module = () => {
     const { id } = useParams();
+    const router = useRouter();
     const { data: session } = useSession();
     const accessToken = session?.accessToken || "";
 
@@ -45,6 +46,13 @@ const Module = () => {
         <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
             <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md">
                 {/* Header Section */}
+                <button
+                    onClick={() => router.back()}
+                    className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    <span>Back</span>
+                </button>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-12">
                     <div>
                         <h2 className="text-4xl text-primary font-bold mb-4">Modules</h2>
