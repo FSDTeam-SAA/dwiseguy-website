@@ -1,14 +1,15 @@
 "use client";
 
 import React from "react";
-import { Loader2, AlertCircle, BookOpen, PlayCircle, Lock, CheckCircle } from "lucide-react";
-import { useParams } from "next/navigation";
+import { Loader2, AlertCircle, BookOpen, PlayCircle, Lock, CheckCircle, ArrowLeft } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useSingleModule } from "../hooks/useSingleModule";
 import { Lesson } from "../types/module.types";
 
 const SingleModule = () => {
     const { id } = useParams();
+    const router = useRouter();
     const { data: session } = useSession();
     const accessToken = session?.accessToken || "";
 
@@ -51,6 +52,13 @@ const SingleModule = () => {
     return (
         <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
             <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md backdrop-blur-sm">
+                <button
+                    onClick={() => router.back()}
+                    className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    <span>Back</span>
+                </button>
                 {/* Header Section */}
                 <div className="mb-12">
                     <h2 className="text-4xl text-primary font-bold mb-4">{moduleData.title}</h2>
@@ -70,10 +78,16 @@ const SingleModule = () => {
                 {/* Lessons Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
                     {lessons.map((lesson: Lesson) => (
-                        <div
+                        <button
                             key={lesson._id}
-                            className={`flex flex-col relative overflow-hidden transition-all duration-500 rounded-2xl p-4 bg-white/5 border border-white/10 group
-                                ${lesson.isUnlocked ? 'cursor-pointer hover:scale-105 hover:border-primary hover:bg-white/10' : 'opacity-60 grayscale-[0.5]'}`}
+                            disabled={!lesson.isUnlocked}
+                            onClick={() => {
+                                if (lesson.isUnlocked) {
+                                    router.push(`/lesson/${lesson._id}`);
+                                }
+                            }}
+                            className={`flex flex-col text-left relative overflow-hidden transition-all duration-500 rounded-2xl p-4 bg-white/5 border border-white/10 group
+                                ${lesson.isUnlocked ? 'cursor-pointer hover:scale-105 hover:border-primary hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-primary' : 'opacity-60 grayscale-[0.5] cursor-not-allowed'}`}
                         >
                             {/* Icon & Status */}
                             <div className="flex justify-between items-start mb-4">
@@ -103,7 +117,7 @@ const SingleModule = () => {
                             {lesson.isUnlocked && !lesson.isCompleted && (
                                 <div className="absolute bottom-0 left-0 h-1 bg-primary/30 w-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                             )}
-                        </div>
+                        </button>
                     ))}
                 </div>
 
