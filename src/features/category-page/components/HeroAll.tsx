@@ -28,21 +28,22 @@ const HeroAll = () => {
         </motion.h2>
         <p>
           {/* Piano Image Animation (Text আর Button এর মাঝে) */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
-          className="mb-8" 
-        >
-          <Image 
-            src="/images/piano-middle.png" 
-            alt="Piano Graphic"
-            width={300} 
-            height={150}
-            className="w-auto h-24 md:h-32 object-contain opacity-80"
-          />
-        </motion.div>
-
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+            className="mb-8"
+          >
+            <Image
+              src="/images/piano-middle.png"
+              alt="Piano Graphic"
+              width={300}
+              height={150}
+              quality={80}
+              sizes="(max-width: 768px) 150px, 300px"
+              className="w-auto h-24 md:h-32 object-contain opacity-80"
+            />
+          </motion.div>
         </p>
         <motion.div
           className="mt-35"
