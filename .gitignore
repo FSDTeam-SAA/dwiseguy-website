@@ -33,6 +33,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+#postman json files
+# *Dwiseguy.postman_collection.json
+
 # vercel
 .vercel
 
