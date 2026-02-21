@@ -1,0 +1,74 @@
+
+> polspoch-website@0.1.0 lint
+> eslint
+
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\app\(auth)\layout.tsx
+  2:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\app\(dashboard)\dashboard\allbooks\page.tsx
+  2:10  warning  'CategoryShow' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\app\(dashboard)\dashboard\setPricing\page.tsx
+  1:8  warning  'PriceSet' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\app\(website)\about-us\page.tsx
+  2:8  warning  'FreeForEveryone' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\app\(website)\contact-us\page.tsx
+  1:8  warning  'Login' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\dashboard\pages\addbooks\Addbooks.tsx
+  1:10  warning  'Button' is defined but never used  @typescript-eslint/no-unused-vars
+  2:8   warning  'Link' is defined but never used    @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\dashboard\pages\allbooks\Allbooks.tsx
+  2:10  warning  'CategoryShow' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\dashboard\pages\allbooks\CategoryCard.tsx
+  20:32  warning  'CheckCircle2' is defined but never used                 @typescript-eslint/no-unused-vars
+  20:46  warning  'XCircle' is defined but never used                      @typescript-eslint/no-unused-vars
+  20:55  warning  'Clock' is defined but never used                        @typescript-eslint/no-unused-vars
+  27:5   warning  'Select' is defined but never used                       @typescript-eslint/no-unused-vars
+  28:5   warning  'SelectContent' is defined but never used                @typescript-eslint/no-unused-vars
+  29:5   warning  'SelectItem' is defined but never used                   @typescript-eslint/no-unused-vars
+  30:5   warning  'SelectTrigger' is defined but never used                @typescript-eslint/no-unused-vars
+  32:10  warning  'cn' is defined but never used                           @typescript-eslint/no-unused-vars
+  42:36  warning  'isUpdating' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  46:11  warning  'handleStatusChange' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\dashboard\pages\allbooks\OrderedBooks.tsx
+  5:10  warning  'Loader2' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\dashboard\pages\overviews\Dashboardpage.tsx
+  1:10  warning  'Search' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\dashboard\pages\setPricing\PriceSet.tsx
+  57:18  warning  'err' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\website\Common\Footer.tsx
+  133:10  warning  'Mail' is defined but never used                  @typescript-eslint/no-unused-vars
+  133:16  warning  'Phone' is defined but never used                 @typescript-eslint/no-unused-vars
+  133:23  warning  'MapPin' is defined but never used                @typescript-eslint/no-unused-vars
+  137:9   warning  'currentYear' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\website\Common\Navbar.tsx
+  6:33  warning  'Package' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\components\website\home-page.tsx
+  5:8  warning  'Doublebutton' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\features\auth\component\Login.tsx
+  3:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\features\auth\component\ResetPassword.tsx
+  4:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\features\auth\component\Verifycode.tsx
+  3:8  warning  'Image' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Iftykhar\dwiseguy\dwiseguy-website\src\features\bandstand\components\bandstand-page\Bandstandpage.tsx
+  5:25  warning  'ChevronLeft' is defined but never used  @typescript-eslint/no-unused-vars
+
+✖ 31 problems (0 errors, 31 warnings)
+
