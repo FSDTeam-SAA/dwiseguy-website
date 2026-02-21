@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { Loader2, AlertCircle, BookOpen, PlayCircle, Lock, CheckCircle, ArrowLeft } from "lucide-react";
+import { Loader2, AlertCircle, BookOpen, PlayCircle, Lock, CheckCircle, ArrowLeft, Play } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useSingleModule } from "../hooks/useSingleModule";
 import { Lesson } from "../types/module.types";
+import { Button } from "@/components/ui/button";
 
 const SingleModule = () => {
     const { id } = useParams();
@@ -78,9 +79,8 @@ const SingleModule = () => {
                 {/* Lessons Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
                     {lessons.map((lesson: Lesson) => (
-                        <button
+                        <div
                             key={lesson._id}
-                            disabled={!lesson.isUnlocked}
                             onClick={() => {
                                 if (lesson.isUnlocked) {
                                     router.push(`/lesson/${lesson._id}`);
@@ -102,22 +102,42 @@ const SingleModule = () => {
 
                             {/* Content */}
                             <div>
-                                <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-1 block">
+                                <span className="text-[10px] uppercase tracking-widest text-white font-bold mb-1 block">
                                     Lesson {lesson.order}
                                 </span>
                                 <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                                    {lesson.title}
+                                    <span className='bg-white rounded-md px-2 py-1 text-primary'>
+                                        {lesson.title}
+                                    </span>
                                 </h3>
-                                <p className="text-gray-400 text-xs line-clamp-2">
+                                <p className="text-white text-xs line-clamp-2">
                                     {lesson.content}
                                 </p>
+                            </div>
+                            <div className="mt-4">
+                                <Button
+                                    disabled={!lesson.isUnlocked}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (lesson.isUnlocked) {
+                                            router.push(`/lesson/${lesson._id}`);
+                                        }
+                                    }}
+                                    className={`w-full flex items-center justify-center gap-2 py-5 font-bold text-lg rounded-xl transition-all ${lesson.isUnlocked
+                                        ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20'
+                                        : 'bg-gray-600 cursor-not-allowed opacity-50'
+                                        }`}
+                                >
+                                    <Play size={20} fill="currentColor" />
+                                    <span>{lesson.isUnlocked ? 'Start Lesson' : 'Locked'}</span>
+                                </Button>
                             </div>
 
                             {/* Progress Overlay (Subtle) */}
                             {lesson.isUnlocked && !lesson.isCompleted && (
                                 <div className="absolute bottom-0 left-0 h-1 bg-primary/30 w-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
                             )}
-                        </button>
+                        </div>
                     ))}
                 </div>
 

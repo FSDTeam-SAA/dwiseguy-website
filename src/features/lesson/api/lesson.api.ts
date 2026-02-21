@@ -13,4 +13,13 @@ export const lessonApi = {
         });
         return response.data;
     },
+
+    completeLesson: async (lessonId: string, accessToken: string) => {
+        const response = await api.patch(`/lesson/complete-lesson/${lessonId}`, {}, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        });
+        return response.data;
+    },
 };
