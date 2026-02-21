@@ -7,7 +7,10 @@ interface CustomSession {
     accessToken?: string;
 }
 
-export const useExerciseContent = (exerciseId: string, token?: string) => {
+export const useExerciseContent = (exerciseId: string, externalToken?: string) => {
+    const { data: session } = useSession();
+    const token = externalToken || (session as CustomSession)?.accessToken;
+
     return useQuery({
         queryKey: ["exerciseContent", exerciseId],
         queryFn: () => exerciseApi.getExerciseContent(exerciseId, token),

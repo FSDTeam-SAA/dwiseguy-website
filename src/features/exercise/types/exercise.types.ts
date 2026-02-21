@@ -39,6 +39,7 @@ export interface IExerciseApiResponse<T> {
 
 export type AllExercisesResponse = IExerciseApiResponse<IExercise[]>;
 export type SingleExerciseResponse = IExerciseApiResponse<IExercise>;
+export type SingleExerciseContentResponse = IExerciseApiResponse<IExerciseContent>;
 
 // Placeholder types for submission (if endpoint is clarified later)
 export interface IExerciseSubmission {
