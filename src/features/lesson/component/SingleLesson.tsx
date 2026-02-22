@@ -3,10 +3,12 @@
 import React from "react";
 import { useParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Loader2, AlertCircle, BookOpen, PlayCircle, ArrowLeft } from "lucide-react";
+import { Loader2, AlertCircle, BookOpen, PlayCircle, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { useSingleLesson } from "../hooks/useSingleLesson";
+import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const SingleLesson = () => {
     const { id } = useParams();
@@ -17,6 +19,8 @@ const SingleLesson = () => {
         id as string,
         accessToken
     );
+
+    const { mutate: completeLesson, isPending: isCompleting } = useCompleteLesson(accessToken);
 
     const lessonData = data?.data;
 
@@ -110,6 +114,43 @@ const SingleLesson = () => {
                         ))}
                     </div>
                 )}
+
+                {/* Lesson Completion Section */}
+                <div className="bg-black/40 p-8 rounded-3xl backdrop-blur-sm border border-white/10 mb-8 flex flex-col items-center justify-center text-center">
+                    {lessonData.isCompleted ? (
+                        <div className="flex flex-col items-center gap-4 text-green-500">
+                            <div className="p-4 bg-green-500/20 rounded-full">
+                                <CheckCircle size={48} />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold">Lesson Completed!</h3>
+                                <p className="text-gray-400 mt-2">You&apos;ve mastered this lesson&apos;s content.</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="w-full max-w-md">
+                            <h3 className="text-xl font-bold mb-4">Finished with the content?</h3>
+                            <p className="text-gray-400 mb-6">Mark this lesson as complete to track your progress.</p>
+                            <Button
+                                onClick={() => completeLesson(id as string)}
+                                disabled={isCompleting}
+                                className="w-full py-6 text-lg font-bold bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-3"
+                            >
+                                {isCompleting ? (
+                                    <>
+                                        <Loader2 size={24} className="animate-spin" />
+                                        <span>Marking as Complete...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <CheckCircle size={24} />
+                                        <span>Complete Lesson</span>
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    )}
+                </div>
 
                 {/* Exercises / Actions */}
                 {lessonData.isExercise && (

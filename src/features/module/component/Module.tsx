@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { useGetAllModules } from "../hooks/useGetAllModules";
 import { Module as ModuleType } from "../types/module.types";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const Module = () => {
     const { id } = useParams();
@@ -81,7 +82,9 @@ const Module = () => {
                                     {/* Text Content */}
                                     <div className="px-2 pb-4">
                                         <h3 className="text-xl font-bold mb-2 text-primary">
-                                            {module?.title}
+                                            <span className='bg-white rounded-lg px-3 py-2'>
+                                                {module?.title}
+                                            </span>
                                         </h3>
                                         <p className="text-gray-300 text-sm md:text-base leading-relaxed line-clamp-3">
                                             {module?.description}
@@ -90,6 +93,9 @@ const Module = () => {
                                             Module {module?.order}
                                         </div>
                                     </div>
+                                    <Button className="w-full text-white bg-primary p-5 text-lg mb-4">
+                                        Start Learning
+                                    </Button>
                                 </div>
                             </Link>
                         </div>

@@ -8,9 +8,14 @@ import ExcerciseTrack from '@/features/progress/component/ExcerciseTrack'
 import QuizeTrack from '@/features/progress/component/QuizeTrack'
 import ProgressCard from '@/features/progress/component/ProgressCard'
 import { BookOpen, BookText, FileQuestion } from 'lucide-react'
+import { useProgressCard } from '@/features/progress/hooks/useProgressCard'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const Page = () => {
     const router = useRouter()
+    const { data: progressData, isLoading } = useProgressCard()
+
+    const stats = progressData?.data
 
     return (
         <div className="flex flex-col min-h-screen text-white">
@@ -31,30 +36,40 @@ const Page = () => {
 
             {/* Progress Overview Cards */}
             <div className="flex flex-wrap gap-6 mb-12">
-                <ProgressCard
-                    title="Lesson Completed"
-                    value="85%"
-                    icon={BookOpen}
-                    bgColor="bg-[#E5E7FF]"
-                    iconBgColor="bg-[#8B93FF]"
-                    percentageColor="text-[#8B93FF]"
-                />
-                <ProgressCard
-                    title="Exercises Completed"
-                    value="80%"
-                    icon={BookText}
-                    bgColor="bg-[#2D114B]"
-                    iconBgColor="bg-[#C644F2]"
-                    percentageColor="text-[#C644F2]"
-                />
-                <ProgressCard
-                    title="Quizzes Completed"
-                    value="90%"
-                    icon={FileQuestion}
-                    bgColor="bg-[#FFE9E5]"
-                    iconBgColor="bg-[#FF8A7A]"
-                    percentageColor="text-[#FF8A7A]"
-                />
+                {isLoading ? (
+                    <>
+                        <Skeleton className="h-[200px] min-w-[280px] flex-1 rounded-[1rem] bg-white/5" />
+                        <Skeleton className="h-[200px] min-w-[280px] flex-1 rounded-[1rem] bg-white/5" />
+                        <Skeleton className="h-[200px] min-w-[280px] flex-1 rounded-[1rem] bg-white/5" />
+                    </>
+                ) : (
+                    <>
+                        <ProgressCard
+                            title="Lesson Completed"
+                            value={`${stats?.lessonsPercent ?? 0}%`}
+                            icon={BookOpen}
+                            bgColor="bg-[#E5E7FF]"
+                            iconBgColor="bg-[#8B93FF]"
+                            percentageColor="text-[#8B93FF]"
+                        />
+                        <ProgressCard
+                            title="Exercises Completed"
+                            value={`${stats?.exercisesPercent ?? 0}%`}
+                            icon={BookText}
+                            bgColor="bg-[#2D114B]"
+                            iconBgColor="bg-[#C644F2]"
+                            percentageColor="text-[#C644F2]"
+                        />
+                        <ProgressCard
+                            title="Quizzes Completed"
+                            value={`${stats?.quizPercent ?? 0}%`}
+                            icon={FileQuestion}
+                            bgColor="bg-[#FFE9E5]"
+                            iconBgColor="bg-[#FF8A7A]"
+                            percentageColor="text-[#FF8A7A]"
+                        />
+                    </>
+                )}
             </div>
 
             <Tabs defaultValue="Leaderboard" className="w-full">

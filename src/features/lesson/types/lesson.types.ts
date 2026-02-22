@@ -28,6 +28,8 @@ export interface LessonData {
     createdAt: string;
     updatedAt: string;
     __v: number;
+    isCompleted?: boolean;
+    isUnlocked?: boolean;
 }
 
 export interface SingleLessonApiResponse {

@@ -1,5 +1,5 @@
-import HeaderTitle from "@/components/website/Common/head-title"
-import Image from "next/image"
+import HeaderTitle from "@/components/website/Common/head-title";
+import Image from "next/image";
 
 const FEATURES = [
   {
@@ -30,17 +30,18 @@ const FEATURES = [
     image: "/images/heroImage.png",
     imageLeft: false,
   },
-]
+];
 
 export function Features() {
   return (
     <section className="py-24 px-6 bg-secondary">
       <div className="container mx-auto">
         <div className="text-center space-y-6 max-w-3xl mx-auto mb-32">
-         <HeaderTitle title="Custom Coloring Books Made From Your Photos"/>
+          <HeaderTitle title="Custom Coloring Books Made From Your Photos" />
           <p className="text-gray-500 text-lg md:text-lg font-medium max-w-2xl mx-auto leading-relaxed">
-            Turn your favorite memories into beautiful black-and-white coloring pages. Upload photos, let AI do the
-            magic, and receive a print-ready coloring book perfect for all ages.
+            Turn your favorite memories into beautiful black-and-white coloring
+            pages. Upload photos, let AI do the magic, and receive a print-ready
+            coloring book perfect for all ages.
           </p>
         </div>
 
@@ -55,17 +56,23 @@ export function Features() {
                   src={feature.image || "/placeholder.svg"}
                   alt={feature.title}
                   fill
+                  quality={75}
+                  sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
               <div className="w-full md:w-1/2 space-y-8 px-4">
-                <h3 className="text-3xl font-bold text-gray-900 tracking-tight">{feature.title}</h3>
-                <p className="text-gray-500 leading-relaxed text-xl font-medium">{feature.description}</p>
+                <h3 className="text-3xl font-bold text-gray-900 tracking-tight">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-500 leading-relaxed text-xl font-medium">
+                  {feature.description}
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }
