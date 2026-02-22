@@ -50,11 +50,11 @@ export default function HomePage() {
           {status === "authenticated" ? <Hero /> : <HeroAll />}
         </motion.div>
 
-        {status === "authenticated" && (
+        {/* {status === "authenticated" && (
           <motion.div variants={sectionVariants}>
             <Funsection />
           </motion.div>
-        )}
+        )} */}
 
         <AnimatePresence mode="wait">
           {/* The double button section will appear when not logged in */}
