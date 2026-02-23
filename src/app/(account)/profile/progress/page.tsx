@@ -80,12 +80,12 @@ const Page = () => {
                     >
                         Leaderboard
                     </TabsTrigger>
-                    <TabsTrigger
+                    {/* <TabsTrigger
                         value="ExcerciseTrack"
                         className="rounded-[0.5rem] data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 text-gray-400 hover:text-white text-lg font-bold py-3 px-8 transition-all cursor-pointer"
                     >
                         Excercise Track
-                    </TabsTrigger>
+                    </TabsTrigger> */}
                     <TabsTrigger
                         value="QuizeTrack"
                         className="rounded-[0.5rem] data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 text-gray-400 hover:text-white text-lg font-bold py-3 px-8 transition-all cursor-pointer"

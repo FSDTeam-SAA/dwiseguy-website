@@ -6,10 +6,11 @@ import { useSession } from "next-auth/react";
 import { Loader2, AlertCircle, Timer, Send, Lock } from "lucide-react";
 import { useGetStudentQuiz } from "../hooks/useGetStudentQuiz";
 import { useSubmitStudentQuiz } from "../hooks/useSubmitStudentQuiz";
-import { IQuestion, IOption, QuizSubmit, IQuiz } from "../types/quize";
+import { IQuestion, IOption, QuizSubmit, IQuiz, IQuizResult } from "../types/quize";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import QuizResultPopUp from "./QuizResultPopUp";
 
 const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: string }) => {
     const router = useRouter();
@@ -22,8 +23,10 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
     const [isLocked, setIsLocked] = useState(false);
     const [hasSubmitted, setHasSubmitted] = useState(false);
     const [showWarning, setShowWarning] = useState(false);
+    const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+    const [resultData, setResultData] = useState<IQuizResult | null>(null);
 
-    const { mutate: submitQuiz, isPending: isSubmitting } = useSubmitStudentQuiz(accessToken);
+    const { mutate: submitQuiz, isPending: isSubmitting } = useSubmitStudentQuiz();
 
     // Handle Submission
     const handleSubmission = useCallback(() => {
@@ -39,16 +42,17 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
         };
 
         submitQuiz(payload, {
-            onSuccess: () => {
+            onSuccess: (response) => {
                 setHasSubmitted(true);
-                router.push(`/quiz/result/${quizData._id}`);
+                setResultData(response.data);
+                setIsResultModalOpen(true);
             },
             onError: (err) => {
                 console.error("Submission failed:", err);
                 alert("Failed to submit quiz. Please try again.");
             }
         });
-    }, [hasSubmitted, quizData, selectedAnswers, submitQuiz, timeLeft, router]);
+    }, [hasSubmitted, quizData, selectedAnswers, submitQuiz, timeLeft]);
 
     // Timer logic
     useEffect(() => {
@@ -209,6 +213,12 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
                     )}
                 </Button>
             </div>
+            {/* Quiz Results Popup */}
+            <QuizResultPopUp
+                isOpen={isResultModalOpen}
+                onClose={() => setIsResultModalOpen(false)}
+                data={resultData}
+            />
         </div>
     );
 };
@@ -218,7 +228,7 @@ const QuizPage = () => {
     const { data: session } = useSession();
     const accessToken = session?.accessToken || "";
 
-    const { data, isLoading, isError, error } = useGetStudentQuiz(id as string, accessToken);
+    const { data, isLoading, isError, error } = useGetStudentQuiz(id as string);
 
     if (isLoading) {
         return (
