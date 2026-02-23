@@ -34,3 +34,12 @@ export interface IQuizApiResponse {
     success: boolean;
     data: IQuiz;
 }
+
+export interface IQuizResult {
+    percentage: number;
+    progressStatus: string;
+    timeTaken: number;
+    status: string;
+    passingPercentage: number;
+    message?: string;
+}
