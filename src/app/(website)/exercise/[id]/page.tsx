@@ -1,10 +1,11 @@
-import SingleExercise from '@/features/exercise/component/SingleExercise'
+// import SingleExercise from '@/features/exercise/component/SingleExercise'
+import SingleExerciseContent from '@/features/exercise/component/SingleExerciseContent'
 import React from 'react'
 
 const page = () => {
     return (
         <div className="min-h-screen w-full bg-[url('/images/login.jpg')] bg-cover bg-center bg-fixed pt-24">
-            <SingleExercise />
+            <SingleExerciseContent />
         </div>
     )
 }
