@@ -25,9 +25,12 @@ export interface LessonData {
     isExercise: boolean;
     order: number;
     exerciseIds: string[];
+    exerciseContentIds?: string[];
     createdAt: string;
     updatedAt: string;
     __v: number;
+    isCompleted?: boolean;
+    isUnlocked?: boolean;
 }
 
 export interface SingleLessonApiResponse {

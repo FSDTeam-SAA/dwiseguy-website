@@ -1,11 +1,11 @@
 {
   "info": {
-    "_postman_id": "d74aca01-b3e9-4273-8748-8b81e2b2ed7d",
+    "_postman_id": "0560c3fd-aea3-4f07-8aed-e87e391c98d9",
     "name": "Dwiseguy",
-    "description": "StartFragment\n\n## 📘 Dwiseguy Backend API Documentation\n\nWelcome to the **Dwiseguy Backend API Documentation**.\n\nThis document provides a comprehensive guide to all available API endpoints, including request structures, response formats, authentication requirements, and example usages to help developers integrate quickly and efficiently.\n\nThe API follows **RESTful standards** and uses **JSON** for data exchange, ensuring consistency, scalability, and ease of use across different platforms.\n\nEndFragment\n\nDomain : [https://dwiseguy-backend.onrender.com](https://dwiseguy-backend.onrender.com)\n\nBAse url: /api/v1\n\nFull url: [https://dwiseguy-backend.onrender.com/api/v1/](https://dwiseguy-backend.onrender.com/api/v1/)",
+    "description": "StartFragment\n\n## 📘 Dwiseguy Backend API Documentation\n\nWelcome to the **Dwiseguy Backend API Documentation**.\n\nThis document provides a comprehensive guide to all available API endpoints, including request structures, response formats, authentication requirements, and example usages to help developers integrate quickly and efficiently.\n\nThe API follows **RESTful standards** and uses **JSON** for data exchange, ensuring consistency, scalability, and ease of use across different platforms.\n\nEndFragment\n\n  \n\nDomain : [https://dwiseguy-backend.onrender.com](https://dwiseguy-backend.onrender.com)\n\nBAse url: /api/v1\n\nFull url: [https://dwiseguy-backend.onrender.com/api/v1/](https://dwiseguy-backend.onrender.com/api/v1/)",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "47546639",
-    "_collection_link": "https://go.postman.co/collection/47546639-d74aca01-b3e9-4273-8748-8b81e2b2ed7d?source=collection_link"
+    "_exporter_id": "50966070",
+    "_collection_link": "https://go.postman.co/collection/50966070-0560c3fd-aea3-4f07-8aed-e87e391c98d9?source=collection_link"
   },
   "item": [
     {
@@ -15,16 +15,10 @@
           "name": "registration",
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//   \"name\": \"Nayem Sarkar\",\r\n//   \"email\": \"nsarkar6251@gmail.com\",\r\n//   \"password\": \"Pass@123\",\r\n//   \"username\": \"gg24\"\r\n// }\r\n\r\n{\r\n  \"name\": \"Iftykhar Alom\",\r\n  \"email\": \"iftykharalom@gmail.com\",\r\n  \"password\": \"Pass@123\",\r\n  \"username\": \"iftykhar10\"\r\n}\r\n\r\n\r\n// {\r\n//   \"name\": \"Tele\",\r\n//   \"email\": \"sabbirdev001@gmail.com\",\r\n//   \"password\": \"Password@123\",\r\n//   \"username\": \"sabbir00921\"\r\n// }\r\n",
+              "raw": "// {\r\n//   \"name\": \"Nayem Sarkar\",\r\n//   \"email\": \"nsarkar6251@gmail.com\",\r\n//   \"password\": \"Pass@123\",\r\n//   \"username\": \"gg24\"\r\n// }\r\n// {\r\n//   \"name\": \"Mr. Admin\",\r\n//   \"email\": \"admin@gmail.com\",\r\n//   \"password\": \"Pass@123\",\r\n//   \"username\": \"admin01\"\r\n// }\r\n\r\n\r\n{\r\n  \"name\": \"Tele\",\r\n  \"email\": \"sabbirdev001@gmail.com\",\r\n  \"password\": \"Password@123\",\r\n  \"username\": \"sabbir00921\"\r\n}\r\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -32,11 +26,13 @@
               }
             },
             "url": {
-              "raw": "{{domain}}{{baseapi}}/auth/registration",
+              "raw": "{{domain}}/api/v1/auth/registration",
               "host": [
-                "{{domain}}{{baseapi}}"
+                "{{domain}}"
               ],
               "path": [
+                "api",
+                "v1",
                 "auth",
                 "registration"
               ]
@@ -74,7 +70,7 @@
               },
               "status": "Created",
               "code": 201,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -135,7 +131,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"usersEmail\": [\r\n  \"user1@example.com\",\"user2@example.com\",\"user3@example.com\",\"user4@example.com\",\"user5@example.com\",\r\n  \"user6@example.com\",\"user7@example.com\",\"user8@example.com\",\"user9@example.com\",\"user10@example.com\",\r\n  \"user11@example.com\",\"user12@example.com\",\"user13@example.com\",\"user14@example.com\",\"user15@example.com\",\r\n  \"user16@example.com\",\"user17@example.com\",\"user18@example.com\",\"user19@example.com\",\"user20@example.com\",\r\n  \"user21@example.com\",\"user22@example.com\",\"user23@example.com\",\"user24@example.com\",\"user25@example.com\",\r\n  \"user26@example.com\",\"user27@example.com\",\"user28@example.com\",\"user29@example.com\",\"user30@example.com\",\r\n  \"user31@example.com\",\"user32@example.com\",\"user33@example.com\",\"user34@example.com\",\"user35@example.com\",\r\n  \"user36@example.com\",\"user37@example.com\",\"user38@example.com\",\"user39@example.com\",\"user40@example.com\",\r\n  \"user41@example.com\",\"user42@example.com\",\"user43@example.com\",\"user44@example.com\",\"user45@example.com\",\r\n  \"user46@example.com\",\"user47@example.com\",\"user48@example.com\",\"user49@example.com\",\"user50@example.com\",\r\n\r\n  \"user51@example.com\",\"user52@example.com\",\"user53@example.com\",\"user54@example.com\",\"user55@example.com\",\r\n  \"user56@example.com\",\"user57@example.com\",\"user58@example.com\",\"user59@example.com\",\"user60@example.com\",\r\n  \"user61@example.com\",\"user62@example.com\",\"user63@example.com\",\"user64@example.com\",\"user65@example.com\",\r\n  \"user66@example.com\",\"user67@example.com\",\"user68@example.com\",\"user69@example.com\",\"user70@example.com\",\r\n  \"user71@example.com\",\"user72@example.com\",\"user73@example.com\",\"user74@example.com\",\"user75@example.com\",\r\n  \"user76@example.com\",\"user77@example.com\",\"user78@example.com\",\"user79@example.com\",\"user80@example.com\",\r\n  \"user81@example.com\",\"user82@example.com\",\"user83@example.com\",\"user84@example.com\",\"user85@example.com\",\r\n  \"user86@example.com\",\"user87@example.com\",\"user88@example.com\",\"user89@example.com\",\"user90@example.com\",\r\n  \"user91@example.com\",\"user92@example.com\",\"user93@example.com\",\"user94@example.com\",\"user95@example.com\",\r\n  \"user96@example.com\",\"user97@example.com\",\"user98@example.com\",\"user99@example.com\",\"user100@example.com\",\r\n\r\n  \"user101@example.com\",\"user102@example.com\",\"user103@example.com\",\"user104@example.com\",\"user105@example.com\",\r\n  \"user106@example.com\",\"user107@example.com\",\"user108@example.com\",\"user109@example.com\",\"user110@example.com\",\r\n  \"user111@example.com\",\"user112@example.com\",\"user113@example.com\",\"user114@example.com\",\"user115@example.com\",\r\n  \"user116@example.com\",\"user117@example.com\",\"user118@example.com\",\"user119@example.com\",\"user120@example.com\",\r\n  \"user121@example.com\",\"user122@example.com\",\"user123@example.com\",\"user124@example.com\",\"user125@example.com\",\r\n  \"user126@example.com\",\"user127@example.com\",\"user128@example.com\",\"user129@example.com\",\"user130@example.com\",\r\n  \"user131@example.com\",\"user132@example.com\",\"user133@example.com\",\"user134@example.com\",\"user135@example.com\",\r\n  \"user136@example.com\",\"user137@example.com\",\"user138@example.com\",\"user139@example.com\",\"user140@example.com\",\r\n  \"user141@example.com\",\"user142@example.com\",\"user143@example.com\",\"user144@example.com\",\"user145@example.com\",\r\n  \"user146@example.com\",\"user147@example.com\",\"user148@example.com\",\"user149@example.com\",\"user150@example.com\",\r\n\r\n  \"user151@example.com\",\"user152@example.com\",\"user153@example.com\",\"user154@example.com\",\"user155@example.com\",\r\n  \"user156@example.com\",\"user157@example.com\",\"user158@example.com\",\"user159@example.com\",\"user160@example.com\",\r\n  \"user161@example.com\",\"user162@example.com\",\"user163@example.com\",\"user164@example.com\",\"user165@example.com\",\r\n  \"user166@example.com\",\"user167@example.com\",\"user168@example.com\",\"user169@example.com\",\"user170@example.com\",\r\n  \"user171@example.com\",\"user172@example.com\",\"user173@example.com\",\"user174@example.com\",\"user175@example.com\",\r\n  \"user176@example.com\",\"user177@example.com\",\"user178@example.com\",\"user179@example.com\",\"user180@example.com\",\r\n  \"user181@example.com\",\"user182@example.com\",\"user183@example.com\",\"user184@example.com\",\"user185@example.com\",\r\n  \"user186@example.com\",\"user187@example.com\",\"user188@example.com\",\"user189@example.com\",\"user190@example.com\",\r\n  \"user191@example.com\",\"user192@example.com\",\"user193@example.com\",\"user194@example.com\",\"user195@example.com\",\r\n  \"user196@example.com\",\"user197@example.com\",\"user198@example.com\",\"user199@example.com\",\"user200@example.com\",\r\n\r\n  \"user201@example.com\",\"user202@example.com\",\"user203@example.com\",\"user204@example.com\",\"user205@example.com\",\r\n  \"user206@example.com\",\"user207@example.com\",\"user208@example.com\",\"user209@example.com\",\"user210@example.com\",\r\n  \"user211@example.com\",\"user212@example.com\",\"user213@example.com\",\"user214@example.com\",\"user215@example.com\",\r\n  \"user216@example.com\",\"user217@example.com\",\"user218@example.com\",\"user219@example.com\",\"user220@example.com\",\r\n  \"user221@example.com\",\"user222@example.com\",\"user223@example.com\",\"user224@example.com\",\"user225@example.com\",\r\n  \"user226@example.com\",\"user227@example.com\",\"user228@example.com\",\"user229@example.com\",\"user230@example.com\",\r\n  \"user231@example.com\",\"user232@example.com\",\"user233@example.com\",\"user234@example.com\",\"user235@example.com\",\r\n  \"user236@example.com\",\"user237@example.com\",\"user238@example.com\",\"user239@example.com\",\"user240@example.com\",\r\n  \"user241@example.com\",\"user242@example.com\",\"user243@example.com\",\"user244@example.com\",\"user245@example.com\",\r\n  \"user246@example.com\",\"user247@example.com\",\"user248@example.com\",\"user249@example.com\",\"user250@example.com\"\r\n]\r\n\r\n}\r\n",
+              "raw": "{\r\n    \"usersEmail\": [\r\n        \"sabbir.dev001@gmail.com\",\r\n        \"yaron25762@coswz.com\"\r\n    ]\r\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -143,9 +139,9 @@
               }
             },
             "url": {
-              "raw": "{{dwiseguy}}/auth/registration-bulk-users",
+              "raw": "{{domain}}{{baseapi}}/auth/registration-bulk-users",
               "host": [
-                "{{dwiseguy}}"
+                "{{domain}}{{baseapi}}"
               ],
               "path": [
                 "auth",
@@ -258,7 +254,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "// {\r\n//     \"email\": \"sabbirdev001@gmail.com\",\r\n//     \"password\": \"Password@123\",\r\n//     \"rememberme\": true\r\n// }\r\n// {\r\n//     \"email\": \"mohsin@test25.com\",\r\n//     \"password\": \"Password@123\",\r\n//     \"rememberme\":true\r\n// }\r\n// student\r\n//   \r\n// {\r\n//   \"email\": \"Nsarkar6251@gmail.com\",\r\n//   \"password\": \"Password@123\"\r\n// }\r\n// {\r\n//     \"email\": \"user250@example.com\",\r\n//     \"password\": \"Password@123\"\r\n// }\r\n\r\n// {\r\n//     \"email\": \"iftykharalom@gmail.com\",\r\n//     \"password\": \"Pass@123\"\r\n// }\r\n\r\n{\r\n    \"email\":\"iftykharalamdev@gmail.com\",\r\n    \"password\":\"Pass@123\"\r\n}\r\n\r\n// {\r\n//     \"email\": \"admin@example.com\",\r\n//     \"password\": \"Password@123\"\r\n// }",
+              "raw": "// {\r\n//    \"email\": \"sabbirdev001@gmail.com\",\r\n//   \"password\": \"Password@123\",\r\n//     \"rememberme\": true\r\n// }\r\n// {\r\n//     \"email\": \"mohsin@test25.com\",\r\n//     \"password\": \"Password@123\",\r\n//     \"rememberme\":true\r\n// }\r\n// student\r\n//   \r\n// {\r\n//   \"email\": \"Nsarkar6251@gmail.com\",\r\n//   \"password\": \"Password@123\"\r\n// }\r\n{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"Password@123\"\r\n}\r\n// {\r\n//     \"email\": \"admin@example.com\",\r\n//     \"password\": \"Password@123\"\r\n// }",
               "options": {
                 "raw": {
                   "language": "json"
@@ -266,9 +262,9 @@
               }
             },
             "url": {
-              "raw": "{{domain}}{{baseApi}}/auth/login",
+              "raw": "{{domain}}{{baseapi}}/auth/login",
               "host": [
-                "{{domain}}{{baseApi}}"
+                "{{domain}}{{baseapi}}"
               ],
               "path": [
                 "auth",
@@ -304,7 +300,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -380,9 +376,9 @@
               }
             },
             "url": {
-              "raw": "{{dwiseguy}}/auth/get-my-profile",
+              "raw": "{{domain}}{{baseapi}}/auth/get-my-profile",
               "host": [
-                "{{dwiseguy}}"
+                "{{domain}}{{baseapi}}"
               ],
               "path": [
                 "auth",
@@ -396,6 +392,15 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/auth/get-my-profile",
                   "host": [
@@ -409,7 +414,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -469,9 +474,9 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{dwiseguy}}/auth/get-single-user/:userId",
+              "raw": "{{domain}}{{baseapi}}/auth/get-single-user/:userId",
               "host": [
-                "{{dwiseguy}}"
+                "{{domain}}{{baseapi}}"
               ],
               "path": [
                 "auth",
@@ -492,6 +497,15 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n    \"email\": \"walema7341@cameltok.com\",\r\n    \"password\": \"Password#123\"\r\n}\r\n// {\r\n//   \"email\": \"Nsarkar6251@gmail.com\",\r\n//   \"password\": \"Password@123\"\r\n// }",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/auth/get-single-user/:id",
                   "host": [
@@ -512,7 +526,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -579,9 +593,9 @@
               "formdata": []
             },
             "url": {
-              "raw": "{{dwiseguy}}/auth/get-all-users",
+              "raw": "{{domain}}{{baseapi}}/auth/get-all-users",
               "host": [
-                "{{dwiseguy}}"
+                "{{domain}}{{baseapi}}"
               ],
               "path": [
                 "auth",
@@ -595,6 +609,15 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [],
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/auth/get-all-users",
                   "host": [
@@ -608,7 +631,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -722,9 +745,7 @@
                     {
                       "key": "image",
                       "type": "file",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/free-nature-images.jpg"
-                      ]
+                      "src": "/C:/Users/Sabbir/Downloads/free-nature-images.jpg"
                     }
                   ]
                 },
@@ -850,7 +871,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -1167,7 +1188,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "json",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -1183,9 +1204,7 @@
                 },
                 {
                   "key": "Content-Type",
-                  "value": "application/json",
-                  "description": "",
-                  "type": "text"
+                  "value": "application/json; charset=utf-8"
                 },
                 {
                   "key": "Content-Length",
@@ -1277,9 +1296,7 @@
                       "key": "image",
                       "type": "file",
                       "uuid": "951e4969-063a-467e-ac0a-6ed6c4dcc181",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/istockphoto-814423752-612x612.jpg"
-                      ]
+                      "src": "/C:/Users/Sabbir/Downloads/istockphoto-814423752-612x612.jpg"
                     }
                   ]
                 },
@@ -1296,7 +1313,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -1394,95 +1411,7 @@
               ]
             }
           },
-          "response": [
-            {
-              "name": "create-course",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "courseTitle",
-                      "value": "Bass guiter",
-                      "type": "text",
-                      "uuid": "38d50604-7fa3-498d-9bcb-b1bcabfcb3f0"
-                    },
-                    {
-                      "key": "courseDescription",
-                      "value": "Play the virtual Drums",
-                      "type": "text",
-                      "uuid": "9ed093f4-98e1-4769-8584-83f9143f33c0"
-                    },
-                    {
-                      "key": "image",
-                      "type": "file",
-                      "uuid": "951e4969-063a-467e-ac0a-6ed6c4dcc181",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/istockphoto-814423752-612x612.jpg"
-                      ]
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{domain}}{{baseapi}}/course/create-course",
-                  "host": [
-                    "{{domain}}{{baseapi}}"
-                  ],
-                  "path": [
-                    "course",
-                    "create-course"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": "json",
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "Access-Control-Allow-Credentials",
-                  "value": "true"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json",
-                  "description": "",
-                  "type": "text"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "477"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"1dd-69+kD3tuBMCuPY7l3Rckgvv9kvw\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Tue, 06 Jan 2026 18:41:07 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Course created successfully\",\n    \"data\": {\n        \"courseTitle\": \"Bass guiter\",\n        \"courseDescription\": \"Play the virtual Drums\",\n        \"courseImage\": {\n            \"public_id\": \"piano/images/yltvnfd3ssbnotdgcbsm\",\n            \"url\": \"https://res.cloudinary.com/dvfmrqurl/image/upload/v1767724868/piano/images/yltvnfd3ssbnotdgcbsm.jpg\"\n        },\n        \"level\": \"beginner\",\n        \"lessons\": [],\n        \"isActive\": true,\n        \"_id\": \"695d5740125fdb6d62426250\",\n        \"createdAt\": \"2026-01-06T18:41:04.998Z\",\n        \"updatedAt\": \"2026-01-06T18:41:07.261Z\",\n        \"__v\": 0\n    }\n}"
-            }
-          ]
+          "response": []
         },
         {
           "name": "get-single-instrument/:id",
@@ -1549,6 +1478,29 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "courseTitle",
+                      "value": "Dhol",
+                      "type": "text",
+                      "uuid": "38d50604-7fa3-498d-9bcb-b1bcabfcb3f0"
+                    },
+                    {
+                      "key": "courseDescription",
+                      "value": "Learn Dhol from anywhare",
+                      "type": "text",
+                      "uuid": "9ed093f4-98e1-4769-8584-83f9143f33c0"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "uuid": "951e4969-063a-467e-ac0a-6ed6c4dcc181",
+                      "src": "/C:/Users/Sabbir/Downloads/istockphoto-814423752-612x612.jpg"
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/course/get-single-course/:id",
                   "host": [
@@ -1569,7 +1521,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -1681,6 +1633,29 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "courseTitle",
+                      "value": "Dhol",
+                      "type": "text",
+                      "uuid": "38d50604-7fa3-498d-9bcb-b1bcabfcb3f0"
+                    },
+                    {
+                      "key": "courseDescription",
+                      "value": "Learn Dhol from anywhare",
+                      "type": "text",
+                      "uuid": "9ed093f4-98e1-4769-8584-83f9143f33c0"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "uuid": "951e4969-063a-467e-ac0a-6ed6c4dcc181",
+                      "src": "/C:/Users/Sabbir/Downloads/istockphoto-814423752-612x612.jpg"
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/course/get-all-courses?page=1&limit=3",
                   "host": [
@@ -1704,7 +1679,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -1858,9 +1833,7 @@
                       "key": "image",
                       "type": "file",
                       "uuid": "5cafdaa9-5237-4c5c-8753-4e8f86caa23a",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/optimize-images-1024x681.jpg"
-                      ],
+                      "src": "/C:/Users/Sabbir/Downloads/optimize-images-1024x681.jpg",
                       "disabled": true
                     }
                   ]
@@ -1885,7 +1858,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -2140,7 +2113,7 @@
                   "variable": [
                     {
                       "key": "id",
-                      "value": "696570051faa1b02d008fa76"
+                      "value": "695eec6d062d1e23d20f40ef"
                     }
                   ]
                 }
@@ -2252,7 +2225,7 @@
                   "formdata": [
                     {
                       "key": "data",
-                      "value": "{\"courseId\": \"695d79251d119f0c803f3f3f\", \"title\": \"Note Lesson 1: The Natural Keys\", \"order\": 1, \"description\": \"Learning the natural notes\"}",
+                      "value": "{\"instrumentId\": \"696570051faa1b02d008fa6f\", \"title\": \"Note Lesson 1: The Natural Keys\", \"order\": 1, \"description\": \"Learning the natural notes\"}",
                       "type": "text",
                       "uuid": "d85db936-a2cb-4f5c-b258-91236de99f6b"
                     },
@@ -2272,9 +2245,9 @@
                   ]
                 },
                 "url": {
-                  "raw": "{{baseUrl}}/admin/lesson/create-lesson",
+                  "raw": "{{domain}}{{baseapi}}/admin/lesson/create-lesson",
                   "host": [
-                    "{{baseUrl}}"
+                    "{{domain}}{{baseapi}}"
                   ],
                   "path": [
                     "admin",
@@ -2308,16 +2281,14 @@
                           "key": "audio",
                           "type": "file",
                           "uuid": "80d4db3b-e11a-4354-b547-f41b52492e71",
-                          "src": [],
+                          "value": null,
                           "disabled": true
                         },
                         {
                           "key": "images",
                           "type": "file",
                           "uuid": "9f50ddcb-9df2-4cc7-bbd9-278d3c9723ca",
-                          "src": [
-                            "/C:/Users/Nayem Sarkar/Downloads/piano.jpg"
-                          ]
+                          "src": "/C:/Users/Nayem Sarkar/Downloads/piano.jpg"
                         }
                       ]
                     },
@@ -2508,7 +2479,7 @@
                   "bearer": [
                     {
                       "key": "token",
-                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTc1MzI5ZjNjYzZiZTVmZjVhY2RkYjgiLCJlbWFpbCI6ImlmdHlraGFyYWxvbUBnbWFpbC5jb20iLCJpYXQiOjE3NzEwOTc2OTQsImV4cCI6MTc3MTcwMjQ5NH0.LDCKWKyvzT2lx3QLsOq92SfknIDfzpj6JDozTtCZFjQ",
+                      "value": "{{accessToken}}",
                       "type": "string"
                     }
                   ]
@@ -2542,6 +2513,15 @@
                   "originalRequest": {
                     "method": "GET",
                     "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
                     "url": {
                       "raw": "{{domain}}{{baseApi}}/module/get-modules/{{instrumentId}}",
                       "host": [
@@ -2556,7 +2536,7 @@
                   },
                   "status": "OK",
                   "code": 200,
-                  "_postman_previewlanguage": "json",
+                  "_postman_previewlanguage": "Text",
                   "header": [
                     {
                       "key": "X-Powered-By",
@@ -2572,9 +2552,7 @@
                     },
                     {
                       "key": "Content-Type",
-                      "value": "application/json",
-                      "description": "",
-                      "type": "text"
+                      "value": "application/json; charset=utf-8"
                     },
                     {
                       "key": "Content-Length",
@@ -2647,6 +2625,15 @@
                   "originalRequest": {
                     "method": "GET",
                     "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
                     "url": {
                       "raw": "{{domain}}{{baseApi}}/module/get-single-module/{{moduleId}}",
                       "host": [
@@ -2741,7 +2728,7 @@
                   "formdata": [
                     {
                       "key": "data",
-                      "value": "{\"moduleId\": \"695eeda729a270a276881c56\", \"title\": \"Exercise 2: Playing C\", \"content\": \"Follow the audio guide.\", \"isExercise\": true, \"order\": 2}",
+                      "value": "{\"moduleId\": \"696570051faa1b02d008fa73\", \"title\": \"Exercise 2: Playing C\", \"content\": \"Follow the audio guide.\", \"isExercise\": true, \"order\": 69}",
                       "type": "text",
                       "uuid": "d85db936-a2cb-4f5c-b258-91236de99f6b"
                     },
@@ -2795,17 +2782,13 @@
                           "key": "images",
                           "type": "file",
                           "uuid": "9f50ddcb-9df2-4cc7-bbd9-278d3c9723ca",
-                          "src": [
-                            "/C:/Users/Nayem Sarkar/Downloads/piano.jpg"
-                          ]
+                          "src": "/C:/Users/Nayem Sarkar/Downloads/piano.jpg"
                         },
                         {
                           "key": "audio",
                           "type": "file",
                           "uuid": "80d4db3b-e11a-4354-b547-f41b52492e71",
-                          "src": [
-                            "/C:/Users/Nayem Sarkar/Downloads/idila_piano.mp3"
-                          ]
+                          "src": "/C:/Users/Nayem Sarkar/Downloads/idila_piano.mp3"
                         }
                       ]
                     },
@@ -2955,17 +2938,13 @@
                           "key": "audio",
                           "type": "file",
                           "uuid": "80d4db3b-e11a-4354-b547-f41b52492e71",
-                          "src": [
-                            "/C:/Users/Nayem Sarkar/Downloads/twilight_piano.mp3"
-                          ]
+                          "src": "/C:/Users/Nayem Sarkar/Downloads/twilight_piano.mp3"
                         },
                         {
                           "key": "images",
                           "type": "file",
                           "uuid": "9f50ddcb-9df2-4cc7-bbd9-278d3c9723ca",
-                          "src": [
-                            "/C:/Users/Nayem Sarkar/Downloads/ERD-Dwiseguy.png"
-                          ]
+                          "src": "/C:/Users/Nayem Sarkar/Downloads/ERD-Dwiseguy.png"
                         }
                       ]
                     },
@@ -3156,6 +3135,87 @@
           "name": "User Lesson",
           "item": [
             {
+              "name": "Get Lesson By Module",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{domain}}{{baseApi}}/lesson/get-lessons-by-module/{{moduleId}}",
+                  "host": [
+                    "{{domain}}{{baseApi}}"
+                  ],
+                  "path": [
+                    "lesson",
+                    "get-lessons-by-module",
+                    "{{moduleId}}"
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "name": "Get Lesson By Module",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{domain}}{{baseApi}}/lesson/get-lessons-by-module/{{moduleId}}",
+                      "host": [
+                        "{{domain}}{{baseApi}}"
+                      ],
+                      "path": [
+                        "lesson",
+                        "get-lessons-by-module",
+                        "{{moduleId}}"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "Text",
+                  "header": [
+                    {
+                      "key": "X-Powered-By",
+                      "value": "Express"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Origin",
+                      "value": "*"
+                    },
+                    {
+                      "key": "Access-Control-Allow-Credentials",
+                      "value": "true"
+                    },
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json; charset=utf-8"
+                    },
+                    {
+                      "key": "Content-Length",
+                      "value": "682"
+                    },
+                    {
+                      "key": "ETag",
+                      "value": "W/\"2aa-sVN4OCi7/KXc9M8UGPBvvw0Scms\""
+                    },
+                    {
+                      "key": "Date",
+                      "value": "Thu, 08 Jan 2026 18:19:39 GMT"
+                    },
+                    {
+                      "key": "Connection",
+                      "value": "keep-alive"
+                    },
+                    {
+                      "key": "Keep-Alive",
+                      "value": "timeout=5"
+                    }
+                  ],
+                  "cookie": [],
+                  "body": "{\n    \"success\": true,\n    \"message\": \"Lessons fetched successfully\",\n    \"data\": [\n        {\n            \"media\": {\n                \"audio\": null,\n                \"images\": []\n            },\n            \"_id\": \"695fea5bfe5aba9700ce3319\",\n            \"moduleId\": \"695fea5afe5aba9700ce3312\",\n            \"title\": \"The White Keys\",\n            \"content\": \"Explanation of A, B, C, D, E, F, G...\",\n            \"isExercise\": false,\n            \"order\": 1,\n            \"quizId\": null,\n            \"createdAt\": \"2026-01-08T17:33:15.050Z\",\n            \"updatedAt\": \"2026-01-08T17:33:15.050Z\",\n            \"__v\": 0\n        },\n        {\n            \"media\": {\n                \"audio\": null,\n                \"images\": []\n            },\n            \"_id\": \"695fea5bfe5aba9700ce331b\",\n            \"moduleId\": \"695fea5afe5aba9700ce3312\",\n            \"title\": \"The Black Keys\",\n            \"content\": \"Understanding sharps and flats\",\n            \"isExercise\": true,\n            \"order\": 2,\n            \"quizId\": null,\n            \"createdAt\": \"2026-01-08T17:33:15.105Z\",\n            \"updatedAt\": \"2026-01-08T17:33:15.105Z\",\n            \"__v\": 0\n        }\n    ]\n}"
+                }
+              ]
+            },
+            {
               "name": "Get Single Lesson",
               "request": {
                 "auth": {
@@ -3243,67 +3303,6 @@
                   ],
                   "cookie": [],
                   "body": "{\n    \"success\": true,\n    \"message\": \"Lesson fetched successfully\",\n    \"data\": {\n        \"media\": {\n            \"audio\": null,\n            \"images\": []\n        },\n        \"_id\": \"695fea5bfe5aba9700ce3319\",\n        \"moduleId\": \"695fea5afe5aba9700ce3312\",\n        \"title\": \"The White Keys\",\n        \"content\": \"Explanation of A, B, C, D, E, F, G...\",\n        \"isExercise\": false,\n        \"order\": 1,\n        \"quizId\": null,\n        \"createdAt\": \"2026-01-08T17:33:15.050Z\",\n        \"updatedAt\": \"2026-01-08T17:33:15.050Z\",\n        \"__v\": 0\n    }\n}"
-                },
-                {
-                  "name": "Get Single Lesson",
-                  "originalRequest": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{domain}}{{baseApi}}/lesson/get-single-lesson/{{lessonId}}",
-                      "host": [
-                        "{{domain}}{{baseApi}}"
-                      ],
-                      "path": [
-                        "lesson",
-                        "get-single-lesson",
-                        "{{lessonId}}"
-                      ]
-                    }
-                  },
-                  "status": "OK",
-                  "code": 200,
-                  "_postman_previewlanguage": null,
-                  "header": [
-                    {
-                      "key": "X-Powered-By",
-                      "value": "Express"
-                    },
-                    {
-                      "key": "Vary",
-                      "value": "Origin"
-                    },
-                    {
-                      "key": "Access-Control-Allow-Credentials",
-                      "value": "true"
-                    },
-                    {
-                      "key": "Content-Type",
-                      "value": "application/json; charset=utf-8"
-                    },
-                    {
-                      "key": "Content-Length",
-                      "value": "718"
-                    },
-                    {
-                      "key": "ETag",
-                      "value": "W/\"2ce-5WHkS/4w9KMBS3cmQD/5W5+Y8kI\""
-                    },
-                    {
-                      "key": "Date",
-                      "value": "Wed, 18 Feb 2026 18:28:43 GMT"
-                    },
-                    {
-                      "key": "Connection",
-                      "value": "keep-alive"
-                    },
-                    {
-                      "key": "Keep-Alive",
-                      "value": "timeout=5"
-                    }
-                  ],
-                  "cookie": [],
-                  "body": "{\n    \"success\": true,\n    \"message\": \"Lesson fetched successfully\",\n    \"meta\": null,\n    \"data\": {\n        \"media\": {\n            \"audio\": {\n                \"url\": \"https://res.cloudinary.com/dvfmrqurl/video/upload/v1771361035/piano/audio/n0m9lgalqxehef0esest.mp3\",\n                \"public_id\": \"piano/audio/n0m9lgalqxehef0esest\"\n            },\n            \"images\": [\n                {\n                    \"url\": \"https://res.cloudinary.com/dvfmrqurl/image/upload/v1771361032/piano/images/lelipji3gyvk3mpyok5b.jpg\",\n                    \"public_id\": \"piano/images/lelipji3gyvk3mpyok5b\",\n                    \"_id\": \"6994d30f3d62b966eddb3659\"\n                }\n            ]\n        },\n        \"_id\": \"6994d30f3d62b966eddb3658\",\n        \"moduleId\": \"696570051faa1b02d008fa73\",\n        \"title\": \"Esse ducimus unde \",\n        \"content\": \"Tenetur dolore et qu\",\n        \"isExercise\": false,\n        \"order\": 3,\n        \"exerciseIds\": [],\n        \"createdAt\": \"2026-02-17T20:43:59.817Z\",\n        \"updatedAt\": \"2026-02-17T20:43:59.817Z\",\n        \"__v\": 0\n    }\n}"
                 }
               ]
             }
@@ -3412,9 +3411,7 @@
                       "key": "image",
                       "type": "file",
                       "uuid": "223251c3-a0fa-4ad3-ab2f-344aa8eb3a31",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/Music Academy Banner  (1920 x 800 px) (1).png"
-                      ]
+                      "src": "/C:/Users/Sabbir/Downloads/Music Academy Banner  (1920 x 800 px) (1).png"
                     }
                   ]
                 },
@@ -3525,6 +3522,29 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "value",
+                      "value": "{\"title\":\"pionedcs\",\"description\":\"Excersise Play the virtual Drums\",\"exerciseId\":\"6963fbce941126662a9760a1\",\"keyNotes\":[\"b1\", \"c#\"]}",
+                      "type": "text",
+                      "uuid": "0c8a2c04-a011-4c3f-ad16-1d6477805188"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "uuid": "657a7a3c-17d3-4a73-8071-5b74a142bebd",
+                      "src": "/C:/Users/Sabbir/Downloads/Piano layout C natural.png"
+                    },
+                    {
+                      "key": "audio",
+                      "type": "file",
+                      "uuid": "79a6b41a-202c-44b8-a148-e8053a38761d",
+                      "src": "/C:/Users/Sabbir/Downloads/Music/BAoM Piano Samples/B2.aif"
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/exercise/get-all-exercises",
                   "host": [
@@ -3538,7 +3558,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -3637,6 +3657,29 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "value",
+                      "value": "{\"title\":\"pionedcs\",\"description\":\"Excersise Play the virtual Drums\",\"exerciseId\":\"6963fbce941126662a9760a1\",\"keyNotes\":[\"b1\", \"c#\"]}",
+                      "type": "text",
+                      "uuid": "0c8a2c04-a011-4c3f-ad16-1d6477805188"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "uuid": "657a7a3c-17d3-4a73-8071-5b74a142bebd",
+                      "src": "/C:/Users/Sabbir/Downloads/Piano layout C natural.png"
+                    },
+                    {
+                      "key": "audio",
+                      "type": "file",
+                      "uuid": "79a6b41a-202c-44b8-a148-e8053a38761d",
+                      "src": "/C:/Users/Sabbir/Downloads/Music/BAoM Piano Samples/B2.aif"
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/exercise/get-single-exercise/:exerciseId",
                   "host": [
@@ -3657,7 +3700,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -3804,7 +3847,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -3915,7 +3958,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -3984,7 +4027,7 @@
               "formdata": [
                 {
                   "key": "value",
-                  "value": "{\"title\":\"pianfo\",\"description\":\"Excersise Play the virtual Drums\",\"exerciseId\":\"6965549a6cabd8cde88fb173\",\"keyNotes\":[\"b1\", \"c#\"]} ",
+                  "value": "{\"title\":\"via\",\"description\":\"Excersise Play the virtual Drums\",\"exerciseId\":\"6965549a6cabd8cde88fb173\",\"lessonId\":\"699a1993739f54a9732ef2f5\",\"keyNotes\":[\"b1\",\"c#\"]}",
                   "type": "text",
                   "uuid": "0c8a2c04-a011-4c3f-ad16-1d6477805188"
                 },
@@ -4032,17 +4075,13 @@
                       "key": "image",
                       "type": "file",
                       "uuid": "657a7a3c-17d3-4a73-8071-5b74a142bebd",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/cheetah-8242729_1280.png"
-                      ]
+                      "src": "/C:/Users/Sabbir/Downloads/cheetah-8242729_1280.png"
                     },
                     {
                       "key": "audio",
                       "type": "file",
                       "uuid": "79a6b41a-202c-44b8-a148-e8053a38761d",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/cinematic-piano-note-362716.mp3"
-                      ]
+                      "src": "/C:/Users/Sabbir/Downloads/cinematic-piano-note-362716.mp3"
                     }
                   ]
                 },
@@ -4059,7 +4098,7 @@
               },
               "status": "Created",
               "code": 201,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -4152,6 +4191,30 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "title",
+                      "value": "Pitch",
+                      "type": "text",
+                      "uuid": "0c8a2c04-a011-4c3f-ad16-1d6477805188"
+                    },
+                    {
+                      "key": "description",
+                      "value": "excersise Play the virtual Drums",
+                      "type": "text",
+                      "uuid": "650b22c0-3ae7-436d-95c7-252a66d1bbbb"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "uuid": "223251c3-a0fa-4ad3-ab2f-344aa8eb3a31",
+                      "src": "/C:/Users/Sabbir/Downloads/BAoM Seal 2.png",
+                      "disabled": true
+                    }
+                  ]
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/exercise-content/get-all-exercise-content",
                   "host": [
@@ -4165,7 +4228,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -4258,7 +4321,7 @@
               },
               "status": "OK",
               "code": 200,
-              "_postman_previewlanguage": "Text",
+              "_postman_previewlanguage": null,
               "header": [
                 {
                   "key": "X-Powered-By",
@@ -4379,18 +4442,14 @@
                       "key": "image",
                       "type": "file",
                       "uuid": "657a7a3c-17d3-4a73-8071-5b74a142bebd",
-                      "src": [
-                        "/C:/Users/Sabbir/Desktop/Environment variable.png"
-                      ],
+                      "src": "/C:/Users/Sabbir/Desktop/Environment variable.png",
                       "disabled": true
                     },
                     {
                       "key": "audio",
                       "type": "file",
                       "uuid": "79a6b41a-202c-44b8-a148-e8053a38761d",
-                      "src": [
-                        "/C:/Users/Sabbir/Downloads/Music/BAoM Piano Samples/B3.aif"
-                      ],
+                      "src": "/C:/Users/Sabbir/Downloads/Music/BAoM Piano Samples/B3.aif",
                       "disabled": true
                     }
                   ]
@@ -6208,6 +6267,10 @@
                     "type": "text"
                   }
                 ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/progress/instrument-details/:instrumentId?userId={{userId}}",
                   "host": [
@@ -6458,6 +6521,15 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/progress/resume/:intrumentId?userId={{userId}}",
                   "host": [
@@ -6574,6 +6646,15 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/progress/leaderboard",
                   "host": [
@@ -6677,6 +6758,15 @@
               "originalRequest": {
                 "method": "GET",
                 "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
                 "url": {
                   "raw": "{{domain}}{{baseapi}}/progress/admin-stats",
                   "host": [
@@ -6947,221 +7037,6 @@
               "body": "{\n    \"success\": true,\n    \"message\": \"Module completed and next module unlocked\",\n    \"meta\": null,\n    \"data\": {\n        \"status\": \"NEXT_MODULE_UNLOCKED\",\n        \"nextModuleId\": \"696961a31bf0df3e779de502\"\n    }\n}"
             }
           ]
-        },
-        {
-          "name": "User Stats",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{accesstokent}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{domain}}{{baseapi}}/progress/global-stats",
-              "host": [
-                "{{domain}}{{baseapi}}"
-              ],
-              "path": [
-                "progress",
-                "global-stats"
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "User Stats",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "https://ftfdesignco-backend-new.onrender.com/api/v1/product/user/69878613f6c8afad57a7f182",
-                  "protocol": "https",
-                  "host": [
-                    "ftfdesignco-backend-new",
-                    "onrender",
-                    "com"
-                  ],
-                  "path": [
-                    "api",
-                    "v1",
-                    "product",
-                    "user",
-                    "69878613f6c8afad57a7f182"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Vary",
-                  "value": "Origin"
-                },
-                {
-                  "key": "Access-Control-Allow-Credentials",
-                  "value": "true"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "149"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"95-vInSex6fWdHXFF5ySGLdSc3hvHU\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Sat, 07 Feb 2026 20:35:47 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"success\": true,\n    \"message\": \"Portfolio statistics retrieved successfully\",\n    \"meta\": null,\n    \"data\": {\n        \"lessonsPercent\": 0,\n        \"exercisesPercent\": 0,\n        \"quizPercent\": 0\n    }\n}"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Contact Us",
-      "item": [
-        {
-          "name": "Contact",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n    \"fullName\": \"Nayem Sarkar\",\r\n    \"email\": \"nsarkar6251@gmail.com\",\r\n    \"subject\": \"Requesting For Fixing the DwiseGuy\",\r\n    \"message\": \" Hello Derrik,I hope you are doing well.I wanted to follow up to confirm whether you’ve had a chance to rev*iew the updated Figma design following your previous fee*dback. My design team has implemented the requested change \"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{domain}}{{baseapi}}/contact-us",
-              "host": [
-                "{{domain}}{{baseapi}}"
-              ],
-              "path": [
-                "contact-us"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Get Lesson By Module",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{domain}}{{baseApi}}/lesson/get-lessons-by-module/{{moduleId}}",
-          "host": [
-            "{{domain}}{{baseApi}}"
-          ],
-          "path": [
-            "lesson",
-            "get-lessons-by-module",
-            "{{moduleId}}"
-          ]
-        }
-      },
-      "response": [
-        {
-          "name": "Get Lesson By Module",
-          "originalRequest": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{domain}}{{baseApi}}/lesson/get-lessons-by-module/{{moduleId}}",
-              "host": [
-                "{{domain}}{{baseApi}}"
-              ],
-              "path": [
-                "lesson",
-                "get-lessons-by-module",
-                "{{moduleId}}"
-              ]
-            }
-          },
-          "status": "OK",
-          "code": 200,
-          "_postman_previewlanguage": "json",
-          "header": [
-            {
-              "key": "X-Powered-By",
-              "value": "Express"
-            },
-            {
-              "key": "Access-Control-Allow-Origin",
-              "value": "*"
-            },
-            {
-              "key": "Access-Control-Allow-Credentials",
-              "value": "true"
-            },
-            {
-              "key": "Content-Type",
-              "value": "application/json",
-              "description": "",
-              "type": "text"
-            },
-            {
-              "key": "Content-Length",
-              "value": "682"
-            },
-            {
-              "key": "ETag",
-              "value": "W/\"2aa-sVN4OCi7/KXc9M8UGPBvvw0Scms\""
-            },
-            {
-              "key": "Date",
-              "value": "Thu, 08 Jan 2026 18:19:39 GMT"
-            },
-            {
-              "key": "Connection",
-              "value": "keep-alive"
-            },
-            {
-              "key": "Keep-Alive",
-              "value": "timeout=5"
-            }
-          ],
-          "cookie": [],
-          "body": "{\n    \"success\": true,\n    \"message\": \"Lessons fetched successfully\",\n    \"data\": [\n        {\n            \"media\": {\n                \"audio\": null,\n                \"images\": []\n            },\n            \"_id\": \"695fea5bfe5aba9700ce3319\",\n            \"moduleId\": \"695fea5afe5aba9700ce3312\",\n            \"title\": \"The White Keys\",\n            \"content\": \"Explanation of A, B, C, D, E, F, G...\",\n            \"isExercise\": false,\n            \"order\": 1,\n            \"quizId\": null,\n            \"createdAt\": \"2026-01-08T17:33:15.050Z\",\n            \"updatedAt\": \"2026-01-08T17:33:15.050Z\",\n            \"__v\": 0\n        },\n        {\n            \"media\": {\n                \"audio\": null,\n                \"images\": []\n            },\n            \"_id\": \"695fea5bfe5aba9700ce331b\",\n            \"moduleId\": \"695fea5afe5aba9700ce3312\",\n            \"title\": \"The Black Keys\",\n            \"content\": \"Understanding sharps and flats\",\n            \"isExercise\": true,\n            \"order\": 2,\n            \"quizId\": null,\n            \"createdAt\": \"2026-01-08T17:33:15.105Z\",\n            \"updatedAt\": \"2026-01-08T17:33:15.105Z\",\n            \"__v\": 0\n        }\n    ]\n}"
         }
       ]
     }
@@ -7188,28 +7063,6 @@
           ""
         ]
       }
-    }
-  ],
-  "variable": [
-    {
-      "key": "dwiseguy",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "domain",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "baseapi",
-      "value": "",
-      "type": "default"
-    },
-    {
-      "key": "baseApi",
-      "value": "",
-      "type": "default"
     }
   ]
 }
