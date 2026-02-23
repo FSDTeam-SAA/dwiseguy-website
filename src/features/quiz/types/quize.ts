@@ -60,3 +60,16 @@ export interface QuizAttemptsResponse {
         averagePercentage: number;
     };
 }
+
+export interface IQuizResult {
+    quizName: string;
+    attemptId: string;
+    score: number;
+    totalMarks: number;
+    percentage: number;
+    progressStatus: string;
+    timeTaken: number;
+    status: "pass" | "retake_suggested" | "must_retake";
+    passingPercentage: number;
+    message: string;
+}
