@@ -25,6 +25,7 @@ export interface LessonData {
     isExercise: boolean;
     order: number;
     exerciseIds: string[];
+    exerciseContentIds?: string[];
     createdAt: string;
     updatedAt: string;
     __v: number;

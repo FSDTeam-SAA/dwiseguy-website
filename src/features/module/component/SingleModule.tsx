@@ -141,6 +141,23 @@ const SingleModule = () => {
                     ))}
                 </div>
 
+                {/* Quiz Section */}
+                {lessons.length > 0 && lessons.every(lesson => lesson.isUnlocked) && moduleData.quizIds && moduleData.quizIds.length > 0 && (
+                    <div className="mt-16 flex flex-col items-center justify-center p-8 bg-primary/5 border border-primary/20 rounded-3xl backdrop-blur-sm">
+                        <h3 className="text-2xl font-bold mb-2 text-primary uppercase tracking-widest text-center">Module Challenge Unlocked</h3>
+                        <p className="text-gray-300 mb-8 text-center max-w-md">
+                            Congratulations! You&apos;ve unlocked all lessons. Prove your mastery by taking the module quiz.
+                        </p>
+                        <Button
+                            onClick={() => console.log("Module Quiz IDs:", moduleData.quizIds)}
+                            className="px-12 py-7 text-xl font-black bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                        >
+                            <Play size={24} fill="currentColor" />
+                            <span>Start Quiz</span>
+                        </Button>
+                    </div>
+                )}
+
                 {lessons.length === 0 && (
                     <div className="text-center py-20">
                         <p className="text-gray-400 text-xl font-medium">No lessons available in this module.</p>
