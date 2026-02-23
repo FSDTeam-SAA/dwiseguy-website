@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Loader2, AlertCircle, BookOpen, PlayCircle, ArrowLeft, CheckCircle } from "lucide-react";
 import Link from "next/link";
@@ -23,6 +23,13 @@ const SingleLesson = () => {
     const { mutate: completeLesson, isPending: isCompleting } = useCompleteLesson(accessToken);
 
     const lessonData = data?.data;
+    const router = useRouter();
+
+    const handleStartExercise = () => {
+        if (lessonData?.exerciseContentIds && lessonData.exerciseContentIds.length > 0) {
+            router.push(`/exercise/${lessonData.exerciseContentIds[0]}`);
+        }
+    };
 
     if (isLoading) {
         return (
@@ -157,7 +164,10 @@ const SingleLesson = () => {
                     <div className="bg-primary/10 border border-primary/20 p-8 rounded-3xl text-center">
                         <h2 className="text-2xl font-bold text-primary mb-4">Ready to Practice?</h2>
                         <p className="text-gray-300 mb-6">This lesson includes exercises to help you master the concepts.</p>
-                        <button className="px-8 py-3 bg-primary text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-all">
+                        <button
+                            onClick={handleStartExercise}
+                            className="px-8 py-3 bg-primary text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-all"
+                        >
                             Start Exercise
                         </button>
                     </div>
