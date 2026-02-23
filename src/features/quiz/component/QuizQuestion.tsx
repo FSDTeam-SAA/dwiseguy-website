@@ -26,7 +26,7 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
     const [isResultModalOpen, setIsResultModalOpen] = useState(false);
     const [resultData, setResultData] = useState<IQuizResult | null>(null);
 
-    const { mutate: submitQuiz, isPending: isSubmitting } = useSubmitStudentQuiz(accessToken);
+    const { mutate: submitQuiz, isPending: isSubmitting } = useSubmitStudentQuiz();
 
     // Handle Submission
     const handleSubmission = useCallback(() => {
@@ -228,7 +228,7 @@ const QuizPage = () => {
     const { data: session } = useSession();
     const accessToken = session?.accessToken || "";
 
-    const { data, isLoading, isError, error } = useGetStudentQuiz(id as string, accessToken);
+    const { data, isLoading, isError, error } = useGetStudentQuiz(id as string);
 
     if (isLoading) {
         return (

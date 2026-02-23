@@ -35,11 +35,28 @@ export interface IQuizApiResponse {
     data: IQuiz;
 }
 
-export interface IQuizResult {
+export interface QuizAttempt {
+    attemptId: string;
+    quizId?: string;
+    quizName: string;
+    score: number;
+    totalMarks: number;
     percentage: number;
-    progressStatus: string;
-    timeTaken: number;
-    status: string;
-    passingPercentage: number;
-    message?: string;
+    status: "pass" | "fail" | "retake_suggested";
+    submittedAt: string;
+}
+
+export interface QuizAttemptsResponse {
+    success: boolean;
+    message: string;
+    meta: unknown;
+    data: {
+        totalQuizzesAttempted: number;
+        totalScore: number;
+        totalPassed: number;
+        total_Retake_Suggested: number;
+        totalFailed: number;
+        attempts: QuizAttempt[];
+        averagePercentage: number;
+    };
 }
