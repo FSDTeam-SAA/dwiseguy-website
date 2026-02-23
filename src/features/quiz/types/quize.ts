@@ -34,3 +34,29 @@ export interface IQuizApiResponse {
     success: boolean;
     data: IQuiz;
 }
+
+export interface QuizAttempt {
+    attemptId: string;
+    quizId?: string;
+    quizName: string;
+    score: number;
+    totalMarks: number;
+    percentage: number;
+    status: "pass" | "fail" | "retake_suggested";
+    submittedAt: string;
+}
+
+export interface QuizAttemptsResponse {
+    success: boolean;
+    message: string;
+    meta: unknown;
+    data: {
+        totalQuizzesAttempted: number;
+        totalScore: number;
+        totalPassed: number;
+        total_Retake_Suggested: number;
+        totalFailed: number;
+        attempts: QuizAttempt[];
+        averagePercentage: number;
+    };
+}

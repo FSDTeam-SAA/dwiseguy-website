@@ -2,12 +2,16 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { getStudentQuizMyAttempts } from "../api/quiz.api";
+import { useSession } from "next-auth/react";
+import { QuizAttemptsResponse } from "../types/quize";
 
+export const useGetStudentQuizMyAttempts = () => {
+    const { data: session } = useSession();
+    const token = session?.accessToken;
 
-export const useGetStudentQuizMyAttempts = (accessToken: string) => {
-    return useQuery({
-        queryKey: ["student-quiz-my-attempts"],
-        queryFn: () => getStudentQuizMyAttempts(accessToken),
-        enabled: !!accessToken,
+    return useQuery<QuizAttemptsResponse>({
+        queryKey: ["student-quiz-my-attempts", token],
+        queryFn: () => getStudentQuizMyAttempts(token || ""),
+        enabled: !!token,
     });
 };
