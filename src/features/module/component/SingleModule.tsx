@@ -54,7 +54,7 @@ const SingleModule = () => {
         <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
             <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md backdrop-blur-sm">
                 <button
-                    onClick={() => router.back()}
+                    onClick={() => router.push("/academy")}
                     className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
                 >
                     <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
