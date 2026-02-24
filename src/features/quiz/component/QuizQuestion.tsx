@@ -179,16 +179,16 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
             {/* Footer Actions */}
             <div className="mt-12 flex flex-col items-center gap-6 p-8 bg-black/40 rounded-3xl border border-white/10 backdrop-blur-sm">
                 <div className="text-center">
-                    <p className="text-gray-400 mb-2 font-medium">
+                    <p className="text-white mb-2 font-medium">
                         {Object.keys(selectedAnswers).length} of {quizData.questions.length} questions answered
                     </p>
                     {Object.keys(selectedAnswers).length < quizData.questions.length ? (
-                        <p className="text-orange-400 text-sm flex items-center gap-2 justify-center">
+                        <p className="text-orange-400 p-2 text-sm flex items-center gap-2 justify-center">
                             <AlertCircle size={14} />
                             Please answer all questions before submitting
                         </p>
                     ) : (
-                        <p className="text-green-400 text-sm flex items-center gap-2 justify-center">
+                        <p className="text-green-400 p-2 text-sm flex items-center gap-2 justify-center">
                             <AlertCircle size={14} />
                             All questions answered. Ready to submit!
                         </p>
