@@ -1,3 +1,4 @@
+// src/features/bandstand/components/piano/theory.ts
 export type Note = {
   name: string;
   sharp?: string;

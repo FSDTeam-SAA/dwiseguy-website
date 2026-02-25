@@ -1,3 +1,4 @@
+// src/features/bandstand/components/piano/PianoKey.tsx
 import React from "react";
 import { cn } from "@/lib/utils"; // Assuming generic utility exists, or I will use standard class concatenation
 import { Note } from "./theory";
