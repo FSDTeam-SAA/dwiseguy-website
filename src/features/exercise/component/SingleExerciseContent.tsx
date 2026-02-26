@@ -35,7 +35,7 @@ const SingleExerciseContent = () => {
 
     return (
         <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
-            <div className="max-w-4xl mx-auto bg-black/40 p-6 sm:p-12 rounded-xl backdrop-blur-md">
+            <div className=" mx-auto bg-black/40 p-6 sm:p-12 rounded-xl backdrop-blur-md">
                 {/* Header Section */}
                 <button
                     onClick={() => router.back()}

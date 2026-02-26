@@ -11,6 +11,7 @@ interface PianoKeyProps {
   onMouseDown: (note: Note) => void;
   onMouseUp: (note: Note) => void;
   onMouseEnter: (note: Note) => void;
+  scaleNotes?: string[];
 }
 
 const PianoKey: React.FC<PianoKeyProps> = ({
@@ -21,6 +22,7 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   onMouseDown,
   onMouseUp,
   onMouseEnter,
+  scaleNotes = [],
 }) => {
   const isBlack = note.isBlack;
 
@@ -98,7 +100,13 @@ const PianoKey: React.FC<PianoKeyProps> = ({
             "font-black tracking-tighter text-gray-500 uppercase",
             isBlack ? "text-[10px] mb-3" : "text-xs mb-2"
           )}>
-            <span>{note.name.replace(/\d/, "")}</span>
+            <span>
+              {isBlack
+                ? ((scaleNotes && note.flat && scaleNotes.includes(note.flat))
+                  ? note.flat.toUpperCase()
+                  : note.sharp?.toUpperCase())
+                : note.name.replace(/\d/, "")}
+            </span>
           </div>
         )}
       </div>

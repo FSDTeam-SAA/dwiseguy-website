@@ -67,10 +67,16 @@ const Piano = () => {
   const [sequenceBuffer, setSequenceBuffer] = useState<Note[]>([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isPlaybackActive, setIsPlaybackActive] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
 
-  // --- Audio Logic & Hard Stop ---
+  const [scrollRatio, setScrollRatio] = useState<number>(0);
+  const [viewportRatio, setViewportRatio] = useState<number>(0.2);
+
+  // --- Refs ---
+  const mainScrollRef = useRef<HTMLDivElement>(null);
+  const miniMapRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const audioBuffersRef = useRef<{ [filename: string]: AudioBuffer }>({});
   const activeSourcesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
@@ -105,15 +111,87 @@ const Piano = () => {
     setIsRecording(false);
   };
 
-  // --- Initialization ---
+  // --- Initialization (Landscape Warning check) ---
   useEffect(() => {
     const checkWidth = () => {
-      setIsSmallScreen(globalThis.innerWidth < 756);
+      // Threshold set to 425px as requested
+      setIsSmallScreen(globalThis.innerWidth < 426);
     };
     checkWidth();
     globalThis.addEventListener("resize", checkWidth);
     return () => globalThis.removeEventListener("resize", checkWidth);
   }, []);
+
+
+  // --- Scroll Tracking ---
+  useEffect(() => {
+    const scrollEl = mainScrollRef.current;
+    if (!scrollEl) return;
+
+    const handleScroll = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollEl;
+      const maxScroll = scrollWidth - clientWidth;
+      if (maxScroll > 0) {
+        setScrollRatio(scrollLeft / maxScroll);
+        setViewportRatio(clientWidth / scrollWidth);
+      }
+    };
+
+    scrollEl.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial calc
+
+    return () => scrollEl.removeEventListener("scroll", handleScroll);
+  }, [notes]);
+
+  const syncScroll = React.useCallback((clientX: number, isSmooth: boolean = false) => {
+    if (!mainScrollRef.current || !miniMapRef.current) return;
+    const rect = miniMapRef.current.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, x / rect.width));
+
+    const { scrollWidth, clientWidth } = mainScrollRef.current;
+    const maxScroll = scrollWidth - clientWidth;
+
+    const targetScroll = (ratio * scrollWidth) - (clientWidth / 2);
+
+    mainScrollRef.current.scrollTo({
+      left: Math.max(0, Math.min(maxScroll, targetScroll)),
+      behavior: isSmooth ? "smooth" : "auto",
+    });
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    syncScroll(e.clientX, true);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    syncScroll(e.touches[0].clientX, true);
+  };
+
+  useEffect(() => {
+    if (!isDragging) return;
+
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = 'touches' in e ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
+      syncScroll(clientX);
+    };
+
+    const handleEnd = () => setIsDragging(false);
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseup', handleEnd);
+    window.addEventListener('touchmove', handleMove, { passive: false });
+    window.addEventListener('touchend', handleEnd);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseup', handleEnd);
+      window.removeEventListener('touchmove', handleMove);
+      window.removeEventListener('touchend', handleEnd);
+    };
+  }, [isDragging, syncScroll]);
 
   // Preloading Logic
   useEffect(() => {
@@ -247,6 +325,7 @@ const Piano = () => {
             isActive={activeNotes.has(note.name)}
             showLabel={showNotes}
             degree={degree}
+            scaleNotes={getScaleInfo(selectedKey, "Major").notes}
             onMouseDown={() => handleNoteTrigger(note, true)}
             onMouseUp={() => handleNoteTrigger(note, false)}
             onMouseEnter={() => { }}
@@ -261,6 +340,7 @@ const Piano = () => {
                 scaleDegrees.get(nextNote.sharp!) ||
                 scaleDegrees.get(nextNote.flat!)
               }
+              scaleNotes={getScaleInfo(selectedKey, "Major").notes}
               onMouseDown={() => handleNoteTrigger(nextNote, true)}
               onMouseUp={() => handleNoteTrigger(nextNote, false)}
               onMouseEnter={() => { }}
@@ -315,9 +395,9 @@ const Piano = () => {
       </div>
 
       {/* --- Top Control Bar --- */}
-      <div className="flex flex-col lg:flex-row items-center justify-between px-4 lg:px-6 py-6 bg-[#0B4D6B] rounded-t-xl border-b border-white/10 shadow-lg gap-6 lg:gap-0">
+      <div className="flex flex-row items-center justify-between px-3 sm:px-4 lg:px-6 py-4 lg:py-6 bg-[#0B4D6B] rounded-t-xl border-b border-white/10 shadow-lg gap-2 lg:gap-0">
         {/* Left: Modes & Actions */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-6 w-full lg:w-auto justify-center">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 lg:gap-6 w-auto justify-center">
           <div className="flex flex-col gap-2 p-1.5 bg-black/20 rounded-lg border border-white/5 shadow-inner">
             <button
               onClick={() => {
@@ -404,18 +484,18 @@ const Piano = () => {
         </div>
 
         {/* Right: Settings */}
-        <div className="flex flex-col  items-center gap-4 w-full lg:w-auto justify-center">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 lg:gap-4 w-auto justify-center">
           <button
             onClick={() => setShowNotes(!showNotes)}
-            className="bg-white/10 justify-center hover:bg-white/20 text-white px-4 lg:px-5 py-2 lg:py-2.5 rounded-lg font-bold shadow-sm transition-colors text-xs lg:text-sm border border-white/10 backdrop-blur-sm"
+            className="bg-white/10 justify-center hover:bg-white/20 text-white min-w-[90px] px-3 sm:px-4 lg:px-5 py-2 lg:py-2.5 rounded-lg font-bold shadow-sm transition-colors text-[10px] sm:text-xs lg:text-sm border border-white/10 backdrop-blur-sm"
           >
-            {showNotes ? "Hide Notes" : "Show Notes"}
+            {showNotes ? "Hide" : "Show"}
           </button>
 
           <div className="relative group">
-            <div className="flex items-center gap-2 bg-white px-4 lg:px-6 py-2 lg:py-2.5 rounded-lg border-2 border-transparent hover:border-white/20 shadow-lg cursor-pointer transition-all active:scale-95">
-              <span className="text-[#0B4D6B] font-black text-sm lg:text-lg uppercase tracking-wide">
-                {selectedKey} Loop
+            <div className="flex items-center gap-1 sm:gap-2 bg-white px-3 sm:px-4 lg:px-6 py-2 lg:py-2.5 rounded-lg border-2 border-transparent hover:border-white/20 shadow-lg cursor-pointer transition-all active:scale-95">
+              <span className="text-[#0B4D6B] font-black text-[10px] sm:text-xs lg:text-lg uppercase tracking-wide">
+                {selectedKey}
               </span>
               <ChevronDown className="h-5 w-5 text-[#0B4D6B]" />
               <select
@@ -434,10 +514,49 @@ const Piano = () => {
         </div>
       </div>
 
+      {/* --- MINI-MAP NAVIGATION (Holographic Slider) --- */}
+      <div className="px-4 mb-2 lg:hidden">
+        <div
+          ref={miniMapRef}
+          onMouseDown={handleMouseDown}
+          onTouchStart={handleTouchStart}
+          className="w-full h-12 bg-black/40 rounded-xl overflow-hidden border border-white/10 relative cursor-pointer group shadow-inner touch-none"
+        >
+          {/* Mini-keys visualization */}
+          <div className="flex w-full h-full opacity-40 pointer-events-none">
+            {notes.map((note, i) => (
+              <div
+                key={`mini-${i}`}
+                className={cn(
+                  "flex-1 border-r border-black/10 last:border-0",
+                  note.isBlack ? "bg-gray-700 h-1/2" : "bg-white h-full"
+                )}
+              />
+            ))}
+          </div>
+
+          {/* Viewport Highlight Slider */}
+          <div
+            className="absolute top-0 bottom-0 bg-white/20 border-x border-white/40 backdrop-blur-[2px] transition-all duration-75 ease-out shadow-[0_0_20px_rgba(255,255,255,0.15)] rounded-sm"
+            style={{
+              left: `${scrollRatio * (1 - viewportRatio) * 100}%`,
+              width: `${viewportRatio * 100}%`
+            }}
+          />
+
+          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <span className="text-[10px] text-white/60 font-black uppercase tracking-widest">Slide to Navigate</span>
+          </div>
+        </div>
+      </div>
+
       {/* --- Piano Roll --- */}
       <div className="flex-1 bg-[#093d56] rounded-b-xl overflow-hidden flex flex-col">
-        <div className="flex-1 overflow-x-auto pb-4 scrollbar-hide">
-          <div className="flex relative justify-start items-start h-full w-full min-w-max lg:min-w-0 bg-[#093d56]">
+        <div
+          ref={mainScrollRef}
+          className="flex-1 overflow-x-auto pb-4 scrollbar-hide touch-pan-x"
+        >
+          <div className="flex relative justify-start items-start h-full w-full min-w-max bg-[#093d56]">
             {renderKeys()}
           </div>
         </div>

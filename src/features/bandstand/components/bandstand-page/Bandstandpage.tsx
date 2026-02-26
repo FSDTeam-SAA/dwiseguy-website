@@ -62,7 +62,7 @@ const Bandstandpage = () => {
                         const isUpcoming = instrument.status === 'upcoming';
 
                         return (
-                            <div key={instrument.id} className="flex flex-col bg-white/30 cursor-pointer space-y-4 border border-white/50 pb-5 rounded-lg group">
+                            <div key={instrument.id} className="flex flex-col bg-white/30 cursor-pointer space-y-4 border p-5 border-white/50 pb-5 rounded-lg group">
                                 <Link href={(instrument.href as string) || "#"}>
                                     {/* Image Container */}
                                     <div className="relative aspect-square overflow-hidden bg-white/50 rounded-3xl bg-[#2a2d3a] border border-white/5 shadow-2xl">
@@ -99,14 +99,14 @@ const Bandstandpage = () => {
                                     </div>
 
                                     {/* Text Content */}
-                                    <div className="px-2">
+                                    <div className="px-2 space-y-2 py-2">
                                         <h3 className={`text-xl font-bold mb-2 ${isActive ? 'text-primary' : 'text-white/60'}`}>
-                                            {instrument.title}
+                                            <span className="bg-white rounded-lg px-2 text-primary">{instrument.title}</span>
                                         </h3>
-                                        <p className="text-gray-300 text-sm md:text-base leading-relaxed">
+                                        <p className="text-white text-sm md:text-base leading-relaxed">
                                             {instrument.description}
                                         </p>
-                                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs uppercase tracking-wider text-gray-400">
+                                        <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full text-xs uppercase tracking-wider text-white">
                                             <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-primary' : 'bg-gray-600'}`} />
                                             {instrument.level}
                                         </div>
