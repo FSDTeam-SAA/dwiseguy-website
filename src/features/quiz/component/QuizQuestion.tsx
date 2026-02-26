@@ -98,7 +98,7 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
     };
 
     return (
-        <div className="container mx-auto p-6 md:p-12 text-white max-w-4xl">
+        <div className="container mx-auto p-6 md:p-12 text-white bg-black/40 backdrop-blur-sm max-w-4xl">
             {/* Header with Timer and Info */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 sticky top-0 bg-background/80 backdrop-blur-md z-10 p-4 rounded-2xl border border-white/10 gap-4">
                 <div>
@@ -179,16 +179,16 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
             {/* Footer Actions */}
             <div className="mt-12 flex flex-col items-center gap-6 p-8 bg-black/40 rounded-3xl border border-white/10 backdrop-blur-sm">
                 <div className="text-center">
-                    <p className="text-gray-400 mb-2 font-medium">
+                    <p className="text-white mb-2 font-medium">
                         {Object.keys(selectedAnswers).length} of {quizData.questions.length} questions answered
                     </p>
                     {Object.keys(selectedAnswers).length < quizData.questions.length ? (
-                        <p className="text-orange-400 text-sm flex items-center gap-2 justify-center">
+                        <p className="text-orange-400 p-2 text-sm flex items-center gap-2 justify-center">
                             <AlertCircle size={14} />
                             Please answer all questions before submitting
                         </p>
                     ) : (
-                        <p className="text-green-400 text-sm flex items-center gap-2 justify-center">
+                        <p className="text-green-400 p-2 text-sm flex items-center gap-2 justify-center">
                             <AlertCircle size={14} />
                             All questions answered. Ready to submit!
                         </p>
@@ -225,10 +225,28 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
 
 const QuizPage = () => {
     const { id } = useParams();
+    const router = useRouter();
     const { data: session } = useSession();
     const accessToken = session?.accessToken || "";
 
     const { data, isLoading, isError, error } = useGetStudentQuiz(id as string);
+
+    const [isErrorModalOpen, setIsErrorModalOpen] = React.useState(false);
+    const [accessErrorMessage, setAccessErrorMessage] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        if (isError && error) {
+            // Check for the specific "lessons not completed" error
+            // The backend returns an error object, usually intercepted by axios
+            const axiosError = error as { response?: { data?: { message?: string } }; message?: string };
+            const message = axiosError?.response?.data?.message || axiosError?.message || "";
+
+            if (message === "You have not completed the last lesson of this module yets") {
+                setAccessErrorMessage("You have not completed the last lesson of this module yet");
+                setIsErrorModalOpen(true);
+            }
+        }
+    }, [isError, error]);
 
     if (isLoading) {
         return (
@@ -239,6 +257,22 @@ const QuizPage = () => {
     }
 
     if (isError || !data?.data) {
+        // If it's the specific access error, we'll show the popup instead of the full error page
+        if (accessErrorMessage) {
+            return (
+                <div className="min-h-[60vh] flex items-center justify-center">
+                    <QuizResultPopUp
+                        isOpen={isErrorModalOpen}
+                        onClose={() => {
+                            setIsErrorModalOpen(false);
+                            router.back();
+                        }}
+                        errorMessage={accessErrorMessage}
+                    />
+                </div>
+            );
+        }
+
         return (
             <div className="min-h-[60vh] flex flex-col items-center justify-center text-white p-6 text-center">
                 <AlertCircle className="w-12 h-12 text-red-500 mb-4" />
