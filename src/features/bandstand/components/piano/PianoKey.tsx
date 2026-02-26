@@ -9,10 +9,10 @@ interface PianoKeyProps {
   isDimmed?: boolean;
   showLabel: boolean;
   degree?: number;
-  scaleNotes?: string[]; // Names of notes in the selected scale
   onMouseDown: (note: Note) => void;
   onMouseUp: (note: Note) => void;
   onMouseEnter: (note: Note) => void;
+  scaleNotes?: string[];
 }
 
 const PianoKey: React.FC<PianoKeyProps> = ({
@@ -21,10 +21,10 @@ const PianoKey: React.FC<PianoKeyProps> = ({
   isDimmed = false,
   showLabel,
   degree,
-  scaleNotes = [],
   onMouseDown,
   onMouseUp,
   onMouseEnter,
+  scaleNotes = [],
 }) => {
   // Determine if this note is in the current scale (if one is selected)
   // If scaleNotes is empty, assume all are valid (not dimmed), unless explicitly passed as dimmed
@@ -91,7 +91,11 @@ const PianoKey: React.FC<PianoKeyProps> = ({
         <div className="pointer-events-none flex flex-col items-center gap-1 sm:gap-2">
           {isBlack ? (
             <div className="flex flex-col items-center font-black tracking-tighter scale-90 mb-1">
-              <span className="text-[10px] opacity-90">{note.sharp?.toUpperCase()}</span>
+              <span className="text-[10px] opacity-90">
+                {(scaleNotes && note.flat && scaleNotes.includes(note.flat))
+                  ? note.flat.toUpperCase()
+                  : note.sharp?.toUpperCase()}
+              </span>
             </div>
           ) : (
             <>
