@@ -288,6 +288,9 @@ const Piano = () => {
           </button>
         </div>
 
+        {/* mid section */}
+
+
         {/* Right Controls */}
         <div className="flex items-center gap-4">
           <button
