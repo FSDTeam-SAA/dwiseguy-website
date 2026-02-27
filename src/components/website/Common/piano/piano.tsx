@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { ChevronDown, Square } from "lucide-react";
+import { ChevronDown, Square, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { generateNotes, getScaleInfo, KEYS, Note } from "./theory";
 import PianoKey from "./PianoKey";
@@ -63,6 +63,7 @@ const Piano = () => {
   const [melodyMode, setMelodyMode] = useState<boolean>(true);
   const [showNotes, setShowNotes] = useState<boolean>(true);
   const [activeNotes, setActiveNotes] = useState<Set<string>>(new Set());
+  const [trackerNotes, setTrackerNotes] = useState<Set<string>>(new Set());
 
   const [sequenceBuffer, setSequenceBuffer] = useState<Note[]>([]);
   const [isRecording, setIsRecording] = useState(false);
@@ -284,16 +285,21 @@ const Piano = () => {
   const handleNoteTrigger = React.useCallback(
     (note: Note, isPress: boolean) => {
       if (!isPress) {
-        if (melodyMode) {
-          setActiveNotes(new Set());
-        }
+        setActiveNotes((prev) => {
+          const next = new Set(prev);
+          next.delete(note.name);
+          return next;
+        });
         return;
       }
+
+      // Add to persistent tracker
+      setTrackerNotes((prev) => new Set(prev).add(note.name));
 
       // Play sound immediately
       if (melodyMode || !isRecording) {
         playSound(note.filename);
-        setActiveNotes(new Set([note.name]));
+        setActiveNotes((prev) => new Set(prev).add(note.name));
       } else if (sequenceBuffer.length < 8) {
         // Chord Mode - Recording (Limit to 8 notes for a chord)
         setSequenceBuffer((prev) => [...prev, note]);
@@ -481,6 +487,67 @@ const Piano = () => {
               </button>
             </div>
           )}
+        </div>
+
+        {/* Middle: Key Tracker */}
+        <div className="hidden lg:flex flex-1 items-center justify-center">
+          <div className="flex items-center gap-4 bg-black/30 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/10 shadow-2xl transition-all duration-300">
+            <div className="flex items-center gap-2">
+              <span className={cn(
+                "h-2 w-2 rounded-full transition-all duration-300",
+                activeNotes.size > 0 ? "bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]" : "bg-white/20"
+              )} />
+              <div className="flex flex-col leading-none">
+                <span className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">Tracker</span>
+                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-0.5">Live</span>
+              </div>
+            </div>
+
+            <div className="h-6 w-px bg-white/10 mx-1" />
+
+            <div className="flex items-center gap-3 min-w-[200px] justify-center relative group/list">
+              {trackerNotes.size > 0 ? (
+                <div className="flex flex-wrap items-center justify-center gap-1.5 animate-in fade-in zoom-in-95 duration-200">
+                  {Array.from(trackerNotes).map((noteName) => (
+                    <span
+                      key={noteName}
+                      className={cn(
+                        "font-extrabold text-sm uppercase transition-all duration-200",
+                        activeNotes.has(noteName)
+                          ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] scale-110"
+                          : "text-white/60"
+                      )}
+                    >
+                      {noteName.replace(/\d/, "")}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-white/20 text-[10px] font-black uppercase tracking-[0.2em] italic">Start playing to track keys</span>
+              )}
+            </div>
+
+            <div className="h-6 w-px bg-white/10 mx-1" />
+
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-white font-black text-xs bg-white/10 px-2.5 py-1 rounded-lg min-w-[32px] text-center border border-white/5">
+                  {trackerNotes.size}
+                </span>
+                <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">Total</span>
+              </div>
+
+              {trackerNotes.size > 0 && (
+                <button
+                  onClick={() => setTrackerNotes(new Set())}
+                  className="p-1.5 hover:bg-red-500/20 rounded-md transition-colors group/clear border border-transparent hover:border-red-500/30"
+                  title="Clear Tracker"
+                >
+                  <X size={14} className="text-white/40 group-hover/clear:text-red-400 transition-colors" />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Right: Settings */}
