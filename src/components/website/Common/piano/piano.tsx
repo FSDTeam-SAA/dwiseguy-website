@@ -48,7 +48,12 @@ const KEY_TO_NOTE_INDEX: { [key: string]: number } = {
   "9": 36,
 };
 
-const Piano = () => {
+interface PianoProps {
+  targetNotes?: string[];
+  onSuccess?: () => void;
+}
+
+const Piano: React.FC<PianoProps> = ({ targetNotes, onSuccess }) => {
   // --- State ---
   const [selectedKey, setSelectedKey] = useState<string>("C");
 
@@ -84,8 +89,14 @@ const Piano = () => {
 
   // Ensure AudioContext is initialized and resumed
   const ensureAudioContext = React.useCallback(async () => {
-    audioContextRef.current ??= new (globalThis.AudioContext ||
-      (globalThis as unknown as Window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    audioContextRef.current ??= new (
+      globalThis.AudioContext ||
+      (
+        globalThis as unknown as Window & {
+          webkitAudioContext: typeof AudioContext;
+        }
+      ).webkitAudioContext
+    )();
 
     if (audioContextRef.current.state === "suspended") {
       await audioContextRef.current.resume();
@@ -123,7 +134,6 @@ const Piano = () => {
     return () => globalThis.removeEventListener("resize", checkWidth);
   }, []);
 
-
   // --- Scroll Tracking ---
   useEffect(() => {
     const scrollEl = mainScrollRef.current;
@@ -144,22 +154,25 @@ const Piano = () => {
     return () => scrollEl.removeEventListener("scroll", handleScroll);
   }, [notes]);
 
-  const syncScroll = React.useCallback((clientX: number, isSmooth: boolean = false) => {
-    if (!mainScrollRef.current || !miniMapRef.current) return;
-    const rect = miniMapRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const ratio = Math.max(0, Math.min(1, x / rect.width));
+  const syncScroll = React.useCallback(
+    (clientX: number, isSmooth: boolean = false) => {
+      if (!mainScrollRef.current || !miniMapRef.current) return;
+      const rect = miniMapRef.current.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const ratio = Math.max(0, Math.min(1, x / rect.width));
 
-    const { scrollWidth, clientWidth } = mainScrollRef.current;
-    const maxScroll = scrollWidth - clientWidth;
+      const { scrollWidth, clientWidth } = mainScrollRef.current;
+      const maxScroll = scrollWidth - clientWidth;
 
-    const targetScroll = (ratio * scrollWidth) - (clientWidth / 2);
+      const targetScroll = ratio * scrollWidth - clientWidth / 2;
 
-    mainScrollRef.current.scrollTo({
-      left: Math.max(0, Math.min(maxScroll, targetScroll)),
-      behavior: isSmooth ? "smooth" : "auto",
-    });
-  }, []);
+      mainScrollRef.current.scrollTo({
+        left: Math.max(0, Math.min(maxScroll, targetScroll)),
+        behavior: isSmooth ? "smooth" : "auto",
+      });
+    },
+    [],
+  );
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
@@ -175,22 +188,25 @@ const Piano = () => {
     if (!isDragging) return;
 
     const handleMove = (e: MouseEvent | TouchEvent) => {
-      const clientX = 'touches' in e ? (e as TouchEvent).touches[0].clientX : (e as MouseEvent).clientX;
+      const clientX =
+        "touches" in e
+          ? (e as TouchEvent).touches[0].clientX
+          : (e as MouseEvent).clientX;
       syncScroll(clientX);
     };
 
     const handleEnd = () => setIsDragging(false);
 
-    window.addEventListener('mousemove', handleMove);
-    window.addEventListener('mouseup', handleEnd);
-    window.addEventListener('touchmove', handleMove, { passive: false });
-    window.addEventListener('touchend', handleEnd);
+    window.addEventListener("mousemove", handleMove);
+    window.addEventListener("mouseup", handleEnd);
+    window.addEventListener("touchmove", handleMove, { passive: false });
+    window.addEventListener("touchend", handleEnd);
 
     return () => {
-      window.removeEventListener('mousemove', handleMove);
-      window.removeEventListener('mouseup', handleEnd);
-      window.removeEventListener('touchmove', handleMove);
-      window.removeEventListener('touchend', handleEnd);
+      window.removeEventListener("mousemove", handleMove);
+      window.removeEventListener("mouseup", handleEnd);
+      window.removeEventListener("touchmove", handleMove);
+      window.removeEventListener("touchend", handleEnd);
     };
   }, [isDragging, syncScroll]);
 
@@ -198,8 +214,14 @@ const Piano = () => {
   useEffect(() => {
     const loadNotes = async () => {
       // We don't need to resume context here, just create it if it doesn't exist
-      audioContextRef.current ??= new (globalThis.AudioContext ||
-        (globalThis as unknown as Window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+      audioContextRef.current ??= new (
+        globalThis.AudioContext ||
+        (
+          globalThis as unknown as Window & {
+            webkitAudioContext: typeof AudioContext;
+          }
+        ).webkitAudioContext
+      )();
 
       const ctx = audioContextRef.current;
 
@@ -222,35 +244,38 @@ const Piano = () => {
     loadNotes();
   }, [notes]);
 
-  const playSound = React.useCallback(async (filename: string, startTime: number = 0) => {
-    const ctx = await ensureAudioContext();
-    const buffer = audioBuffersRef.current[filename];
+  const playSound = React.useCallback(
+    async (filename: string, startTime: number = 0) => {
+      const ctx = await ensureAudioContext();
+      const buffer = audioBuffersRef.current[filename];
 
-    if (buffer) {
-      const source = ctx.createBufferSource();
-      source.buffer = buffer;
+      if (buffer) {
+        const source = ctx.createBufferSource();
+        source.buffer = buffer;
 
-      const gainNode = ctx.createGain();
-      // Target volume 0.85
-      const targetVolume = 0.85;
+        const gainNode = ctx.createGain();
+        // Target volume 0.85
+        const targetVolume = 0.85;
 
-      // prevent "clicking" or "popping" (Derek's request)
-      const now = startTime || ctx.currentTime;
-      gainNode.gain.setValueAtTime(0, now);
-      gainNode.gain.linearRampToValueAtTime(targetVolume, now + 0.005);
+        // prevent "clicking" or "popping" (Derek's request)
+        const now = startTime || ctx.currentTime;
+        gainNode.gain.setValueAtTime(0, now);
+        gainNode.gain.linearRampToValueAtTime(targetVolume, now + 0.005);
 
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
+        source.connect(gainNode);
+        gainNode.connect(ctx.destination);
 
-      // Track active source for Panic button
-      activeSourcesRef.current.add(source);
-      source.onended = () => {
-        activeSourcesRef.current.delete(source);
-      };
+        // Track active source for Panic button
+        activeSourcesRef.current.add(source);
+        source.onended = () => {
+          activeSourcesRef.current.delete(source);
+        };
 
-      source.start(now);
-    }
-  }, [ensureAudioContext]);
+        source.start(now);
+      }
+    },
+    [ensureAudioContext],
+  );
 
   // --- Core Logic Functions ---
   const clearBuffer = () => {
@@ -325,7 +350,10 @@ const Piano = () => {
       const degree = scaleDegrees.get(strippedName);
 
       elements.push(
-        <div key={note.name} className="relative flex-1 min-w-[80px] lg:min-w-0 flex shrink-0">
+        <div
+          key={note.name}
+          className="relative flex-1 min-w-[80px] lg:min-w-0 flex shrink-0"
+        >
           <PianoKey
             note={note}
             isActive={activeNotes.has(note.name)}
@@ -334,7 +362,7 @@ const Piano = () => {
             scaleNotes={getScaleInfo(selectedKey, "Major").notes}
             onMouseDown={() => handleNoteTrigger(note, true)}
             onMouseUp={() => handleNoteTrigger(note, false)}
-            onMouseEnter={() => { }}
+            onMouseEnter={() => {}}
           />
 
           {hasBlack && (
@@ -349,7 +377,7 @@ const Piano = () => {
               scaleNotes={getScaleInfo(selectedKey, "Major").notes}
               onMouseDown={() => handleNoteTrigger(nextNote, true)}
               onMouseUp={() => handleNoteTrigger(nextNote, false)}
-              onMouseEnter={() => { }}
+              onMouseEnter={() => {}}
             />
           )}
         </div>,
@@ -387,6 +415,73 @@ const Piano = () => {
       globalThis.removeEventListener("keyup", handleKeyUp);
     };
   }, [notes, handleNoteTrigger]);
+
+  // --- Exercise Matching Logic ---
+  useEffect(() => {
+    if (!targetNotes || targetNotes.length === 0 || !onSuccess) return;
+
+    const normalize = (note: string) => {
+      return note.toLowerCase().replace(/\s+/g, "");
+    };
+
+    const isMatch = (playedNote: string, targetNote: string) => {
+      const normalizedPlayed = normalize(playedNote);
+      const normalizedTarget = normalize(targetNote);
+
+      // Direct match (e.g., "c1" === "c1")
+      if (normalizedPlayed === normalizedTarget) return true;
+
+      // Match without octave (e.g., "c" in target matches "c1", "c2" in played)
+      // Or if target is just "c#", it should match "db1", "c#1", etc.
+      const playedNoteOnly = normalizedPlayed.replace(/\d+/, "");
+      const targetNoteOnly = normalizedTarget.replace(/\d+/, "");
+
+      // Handle Enharmonic Equivalents (C# == Db)
+      const getEnharmonic = (n: string) => {
+        const enharmonics: { [key: string]: string } = {
+          "c#": "db",
+          db: "c#",
+          "d#": "eb",
+          eb: "d#",
+          "f#": "gb",
+          gb: "f#",
+          "g#": "ab",
+          ab: "g#",
+          "a#": "bb",
+          bb: "a#",
+        };
+        return enharmonics[n] || n;
+      };
+
+      if (playedNoteOnly === targetNoteOnly) return true;
+      if (getEnharmonic(playedNoteOnly) === targetNoteOnly) return true;
+
+      // Specific octave match if target HAS octave
+      // If target is "c#1", it must match "db1" or "c#1"
+      if (/\d/.test(normalizedTarget)) {
+        // If target has octave, it's already covered by the first direct match check or should be precisely matched
+        // But played might be "db1" and target "c#1"
+        const playedOctave = normalizedPlayed.match(/\d+/)?.[0];
+        const targetOctave = normalizedTarget.match(/\d+/)?.[0];
+        if (
+          playedOctave === targetOctave &&
+          getEnharmonic(playedNoteOnly) === targetNoteOnly
+        )
+          return true;
+      }
+
+      return false;
+    };
+
+    const playedNotesArr = Array.from(trackerNotes);
+    const allMatched = targetNotes.every((target) =>
+      playedNotesArr.some((played) => isMatch(played, target)),
+    );
+
+    if (allMatched && trackerNotes.size > 0) {
+      onSuccess();
+    }
+  }, [trackerNotes, targetNotes, onSuccess]);
 
   return (
     <div className="w-full bg-[#0F5F85] p-6 rounded-xl flex flex-col gap-1 shadow-2xl min-h-[600px] relative">
@@ -493,13 +588,21 @@ const Piano = () => {
         <div className="hidden lg:flex flex-1 items-center justify-center">
           <div className="flex items-center gap-4 bg-black/30 backdrop-blur-md px-5 py-2.5 rounded-full border border-white/10 shadow-2xl transition-all duration-300">
             <div className="flex items-center gap-2">
-              <span className={cn(
-                "h-2 w-2 rounded-full transition-all duration-300",
-                activeNotes.size > 0 ? "bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]" : "bg-white/20"
-              )} />
+              <span
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all duration-300",
+                  activeNotes.size > 0
+                    ? "bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(96,165,250,0.8)]"
+                    : "bg-white/20",
+                )}
+              />
               <div className="flex flex-col leading-none">
-                <span className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">Tracker</span>
-                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-0.5">Live</span>
+                <span className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em]">
+                  Tracker
+                </span>
+                <span className="text-[10px] font-black text-white/20 uppercase tracking-widest mt-0.5">
+                  Live
+                </span>
               </div>
             </div>
 
@@ -515,7 +618,7 @@ const Piano = () => {
                         "font-extrabold text-sm uppercase transition-all duration-200",
                         activeNotes.has(noteName)
                           ? "text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.6)] scale-110"
-                          : "text-white/60"
+                          : "text-white/60",
                       )}
                     >
                       {noteName.replace(/\d/, "")}
@@ -523,7 +626,9 @@ const Piano = () => {
                   ))}
                 </div>
               ) : (
-                <span className="text-white/20 text-[10px] font-black uppercase tracking-[0.2em] italic">Start playing to track keys</span>
+                <span className="text-white/20 text-[10px] font-black uppercase tracking-[0.2em] italic">
+                  Start playing to track keys
+                </span>
               )}
             </div>
 
@@ -534,7 +639,9 @@ const Piano = () => {
                 <span className="text-white font-black text-xs bg-white/10 px-2.5 py-1 rounded-lg min-w-[32px] text-center border border-white/5">
                   {trackerNotes.size}
                 </span>
-                <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">Total</span>
+                <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">
+                  Total
+                </span>
               </div>
 
               {trackerNotes.size > 0 && (
@@ -543,7 +650,10 @@ const Piano = () => {
                   className="p-1.5 hover:bg-red-500/20 rounded-md transition-colors group/clear border border-transparent hover:border-red-500/30"
                   title="Clear Tracker"
                 >
-                  <X size={14} className="text-white/40 group-hover/clear:text-red-400 transition-colors" />
+                  <X
+                    size={14}
+                    className="text-white/40 group-hover/clear:text-red-400 transition-colors"
+                  />
                 </button>
               )}
             </div>
@@ -596,7 +706,7 @@ const Piano = () => {
                 key={`mini-${i}`}
                 className={cn(
                   "flex-1 border-r border-black/10 last:border-0",
-                  note.isBlack ? "bg-gray-700 h-1/2" : "bg-white h-full"
+                  note.isBlack ? "bg-gray-700 h-1/2" : "bg-white h-full",
                 )}
               />
             ))}
@@ -607,12 +717,14 @@ const Piano = () => {
             className="absolute top-0 bottom-0 bg-white/20 border-x border-white/40 backdrop-blur-[2px] transition-all duration-75 ease-out shadow-[0_0_20px_rgba(255,255,255,0.15)] rounded-sm"
             style={{
               left: `${scrollRatio * (1 - viewportRatio) * 100}%`,
-              width: `${viewportRatio * 100}%`
+              width: `${viewportRatio * 100}%`,
             }}
           />
 
           <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-            <span className="text-[10px] text-white/60 font-black uppercase tracking-widest">Slide to Navigate</span>
+            <span className="text-[10px] text-white/60 font-black uppercase tracking-widest">
+              Slide to Navigate
+            </span>
           </div>
         </div>
       </div>
@@ -659,4 +771,3 @@ const Piano = () => {
 };
 
 export default Piano;
-
