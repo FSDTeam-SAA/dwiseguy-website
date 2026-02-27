@@ -166,7 +166,7 @@ const SingleLesson = () => {
                         <p className="text-gray-300 mb-6">This lesson includes exercises to help you master the concepts.</p>
                         <button
                             onClick={handleStartExercise}
-                            className="px-8 py-3 bg-primary text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-all"
+                            className="px-8 py-3 bg-primary cursor-pointer text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-all"
                         >
                             Start Exercise
                         </button>
