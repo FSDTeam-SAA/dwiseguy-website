@@ -8,7 +8,7 @@ import {
   Timer,
   Lock,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { signOut } from "next-auth/react";
 import {
   Dialog,
@@ -31,6 +31,15 @@ export default function Sidebar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
+  const currentHash = useSyncExternalStore(
+    (callback) => {
+      globalThis.addEventListener("hashchange", callback);
+      return () => globalThis.removeEventListener("hashchange", callback);
+    },
+    () => globalThis.location.hash,
+    () => "" // Server-side snapshot
+  );
+
   const handleLogout = () => {
     signOut({ callbackUrl: "/login" });
     setOpen(false);
@@ -44,7 +53,6 @@ export default function Sidebar() {
       <nav className="flex flex-col gap-y-3 space-y-4">
         {navigation.map((item) => {
           // Improved activity logic for hash routes
-          const currentHash = typeof globalThis !== 'undefined' ? globalThis.location.hash : '';
           const currentPathWithHash = pathname + currentHash;
 
           let isItemActive = currentPathWithHash === item.href;
@@ -56,17 +64,21 @@ export default function Sidebar() {
 
           const isProgress = item.name === "Progress";
 
+          // Refactored active classes to avoid nested ternary
+          let activeClasses = "text-gray-400 hover:bg-white/5 hover:text-white";
+          if (isItemActive && !isProgress) {
+            activeClasses = "bg-primary text-white shadow-lg shadow-primary/20";
+          } else if (isProgress) {
+            activeClasses = "bg-black border border-white/20 text-white hover:bg-white/5";
+          }
+
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
                 "flex items-center gap-3 rounded-[0.5rem] px-5 py-3 text-sm font-semibold transition-all duration-200 w-full",
-                isItemActive && !isProgress
-                  ? "bg-primary text-white shadow-lg shadow-primary/20"
-                  : isProgress
-                    ? "bg-black border border-white/20 text-white hover:bg-white/5"
-                    : "text-gray-400 hover:bg-white/5 hover:text-white"
+                activeClasses
               )}
             >
               <item.icon className={cn("h-4 w-4", isItemActive && !isProgress ? "text-white" : "text-white/70")} />
