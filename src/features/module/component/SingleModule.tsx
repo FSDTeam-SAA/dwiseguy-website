@@ -133,15 +133,16 @@ const SingleModule = () => {
                         <p className="text-gray-300 mb-8 text-center max-w-md">
                             Congratulations! You&apos;ve unlocked all lessons. Prove your mastery by taking the module quiz.
                         </p>
-                        <Link href={`/quiz/${moduleData.quizIds[0]}`}>  
-                        
-                        <Button
-                            onClick={() => console.log("Module Quiz IDs:", moduleData.quizIds)}
-                            className="px-12 py-7 text-xl font-black bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
-                        >
-                            <Play size={24} fill="currentColor" />
-                            <span>Start Quiz</span>
-                        </Button>
+                        {/* <Link href={`/quiz/${moduleData.quizIds[0]}`}> */}
+                        <Link href={`/quiz/${moduleData.quizIds[0]}`}>
+
+                            <Button
+                                onClick={() => console.log("Module Quiz IDs:", moduleData.quizIds)}
+                                className="px-12 py-7 text-xl font-black bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                            >
+                                <Play size={24} fill="currentColor" />
+                                <span>Start Quiz</span>
+                            </Button>
                         </Link>
                     </div>
                 )}
