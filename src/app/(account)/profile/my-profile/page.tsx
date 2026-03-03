@@ -4,9 +4,27 @@ import PersonalInfo from '@/components/account/pages/PersonalInfo'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 const Page = () => {
     const router = useRouter()
+    const [activeTab, setActiveTab] = useState("personal")
+
+    useEffect(() => {
+        const handleHashChange = () => {
+            const hash = globalThis.location.hash
+            if (hash === "#change-password") {
+                setActiveTab("change-password")
+            } else if (hash === "#personal") {
+                setActiveTab("personal")
+            }
+        }
+
+        handleHashChange()
+        globalThis.addEventListener("hashchange", handleHashChange)
+        return () => globalThis.removeEventListener("hashchange", handleHashChange)
+    }, [])
+
     return (
         <div className="flex flex-col min-h-screen text-white">
             {/* Page Header */}
@@ -24,7 +42,7 @@ const Page = () => {
                 <p className="text-gray-300 text-lg font-medium">Manage your account</p>
             </div>
 
-            <Tabs defaultValue="personal" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="bg-transparent w-full justify-start h-auto p-0 mb-10 rounded-none gap-4">
                     <TabsTrigger
                         value="personal"
@@ -36,7 +54,7 @@ const Page = () => {
                         value="change-password"
                         className="rounded-[0.5rem] data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-lg data-[state=active]:shadow-primary/20 text-gray-400 hover:text-white text-lg font-bold py-3 px-8 transition-all cursor-pointer"
                     >
-                        Changes Password
+                        Change Password
                     </TabsTrigger>
                 </TabsList>
 

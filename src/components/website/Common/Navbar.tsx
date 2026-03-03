@@ -3,11 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Menu, X, User, LogOut, Package, Key } from "lucide-react";
+import { Menu, X, User, LogOut, Key } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
+import { useGetUserProfile } from "@/features/account/hooks/usePersonalinfo";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,6 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { Session } from "next-auth";
 
 // Menu items for unauthenticated users
 const unauthenticatedMenuItems = [
@@ -35,62 +39,65 @@ const authenticatedMenuItems = [
   { href: "/academy", label: "Academy" },
 ];
 
-import { Session } from "next-auth";
-
 // Reusable User Profile Dropdown Component
-const UserProfile = ({ session }: { session: Session | null }) => (
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button
-        variant="ghost"
-        className="relative h-10 w-10 rounded-full border border-primary/20 p-0 hover:bg-primary/10"
-      >
-        <Avatar className="h-9 w-9 bg-white">
-          <AvatarImage
-            src={session?.user?.image || ""}
-            alt={session?.user?.name || "User"}
-          />
-          <AvatarFallback className="bg-primary/10 text-primary">
-            {session?.user?.name?.charAt(0) || <User size={18} />}
-          </AvatarFallback>
-        </Avatar>
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent className="w-56 mt-2" align="end" forceMount>
-      <DropdownMenuLabel className="font-normal">
-        <div className="flex flex-col space-y-1">
-          <p className="text-sm font-medium leading-none">
-            {session?.user?.name}
-          </p>
-          <p className="text-xs leading-none text-muted-foreground">
-            {session?.user?.email}
-          </p>
-        </div>
-      </DropdownMenuLabel>
-      <DropdownMenuSeparator />
-      <Link href="/profile/orders">
-        {/* <DropdownMenuItem className="cursor-pointer">
-          <Package className="mr-2 h-4 w-4" />
-          <span>Order History</span>
-        </DropdownMenuItem> */}
-      </Link>
-      <Link href="/profile/change-password">
-        <DropdownMenuItem className="cursor-pointer">
-          <Key className="mr-2 h-4 w-4" />
-          <span>Change Password</span>
+const UserProfile = ({ session }: { session: Session | null }) => {
+  const { data: profileResponse } = useGetUserProfile();
+  const profileData = profileResponse?.data;
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="relative h-10 w-10 rounded-full border border-primary/20 p-0 hover:bg-primary/10 transition-all active:scale-95"
+        >
+          <Avatar className="h-9 w-9 bg-white">
+            <AvatarImage
+              src={profileData?.avatar?.url || session?.user?.image || ""}
+              alt={profileData?.name || session?.user?.name || "User"}
+            />
+            <AvatarFallback className="bg-primary/10 text-primary">
+              {(profileData?.name || session?.user?.name)?.charAt(0) || <User size={18} />}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56 mt-2 shadow-2xl border-primary/10" align="end" forceMount>
+        <DropdownMenuLabel className="font-normal">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-bold leading-none text-primary">
+              {profileData?.name || session?.user?.name}
+            </p>
+            <p className="text-xs leading-none text-muted-foreground">
+              {profileData?.email || session?.user?.email}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <Link href="/profile/my-profile#personal">
+          <DropdownMenuItem className="cursor-pointer">
+            <User className="mr-2 h-4 w-4" />
+            <span>My Profile</span>
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/profile/my-profile#change-password">
+          <DropdownMenuItem className="cursor-pointer">
+            <Key className="mr-2 h-4 w-4" />
+            <span>Change Password</span>
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-red-600 cursor-pointer focus:bg-red-50 focus:text-red-600"
+          onClick={() => signOut({ callbackUrl: "/" })}
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log Out</span>
         </DropdownMenuItem>
-      </Link>
-      <DropdownMenuSeparator />
-      <DropdownMenuItem
-        className="text-red-600 cursor-pointer focus:bg-red-50 focus:text-red-600"
-        onClick={() => signOut({ callbackUrl: "/" })}
-      >
-        <LogOut className="mr-2 h-4 w-4" />
-        <span>Log Out</span>
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-);
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -162,28 +169,64 @@ export default function Navbar() {
 
         {/* 3. DESKTOP ACTIONS */}
         <div className="hidden md:flex items-center gap-4">
-          {status === "unauthenticated" ? (
-            <Link href="/login">
-              <Button
-                variant="outline"
-                className={cn(
-                  "font-bold transition-all duration-300",
-                  scrolled
-                    ? "border-primary/20 bg-primary text-white hover:bg-primary/90"
-                    : "border-white/20 bg-white/10 text-white hover:bg-white hover:text-primary",
-                )}
+          <AnimatePresence mode="wait">
+            {status === "unauthenticated" ? (
+              <motion.div
+                key="login-btn"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                Log In
-              </Button>
-            </Link>
-          ) : (
-            <UserProfile session={session} />
-          )}
+                <Link href="/login">
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "font-bold transition-all duration-300 hover:shadow-lg active:scale-95",
+                      scrolled
+                        ? "border-primary/20 bg-primary text-white hover:bg-primary/90"
+                        : "border-white/20 bg-white/10 text-white hover:bg-white hover:text-primary",
+                    )}
+                  >
+                    Log In
+                  </Button>
+                </Link>
+              </motion.div>
+            ) : status === "authenticated" ? (
+              <motion.div
+                key="user-profile"
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <UserProfile session={session} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="loader"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-10 w-10 rounded-full bg-white/10 animate-pulse"
+              />
+            )}
+          </AnimatePresence>
         </div>
 
         {/* 4. MOBILE MENU & TOGGLE */}
         <div className="flex md:hidden items-center gap-3">
-          {status === "authenticated" && <UserProfile session={session} />}
+          <AnimatePresence mode="wait">
+            {status === "authenticated" && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+              >
+                <UserProfile session={session} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
