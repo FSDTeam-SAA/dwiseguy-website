@@ -144,6 +144,8 @@ export default function Navbar() {
           />
         </Link>
 
+        
+
         {/* 2. DESKTOP MENU */}
         <ul className="hidden md:flex items-center space-x-2">
           {menuItems.map((item) => (
