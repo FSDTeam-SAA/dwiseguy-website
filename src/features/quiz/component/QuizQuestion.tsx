@@ -44,7 +44,12 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
         submitQuiz(payload, {
             onSuccess: (response) => {
                 setHasSubmitted(true);
-                setResultData(response.data);
+                // Ensure quizId is present in resultData for the popup
+                const result = {
+                    ...response.data,
+                    quizId: quizData._id
+                };
+                setResultData(result);
                 setIsResultModalOpen(true);
             },
             onError: (err) => {

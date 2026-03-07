@@ -34,126 +34,126 @@ const SingleModule = () => {
 
   if (isLoading) {
     return (
-        <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
-            <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md backdrop-blur-sm">
-                <button
-                    onClick={() => router.push("/academy")}
-                    className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
-                >
-                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                    <span>Back</span>
-                </button>
-                {/* Header Section */}
-                {moduleData && (
-                <div className="mb-12">
-                    <h2 className="text-4xl text-primary font-bold mb-4">{moduleData.title}</h2>
-                    <p className="text-lg text-gray-300 max-w-3xl">
-                        {moduleData.description}
-                    </p>
-                    <div className="mt-6 flex items-center gap-4">
-                        <span className="px-4 py-1.5 bg-primary/20 border border-primary/30 rounded-full text-primary text-sm font-semibold">
-                            Module {moduleData.order}
-                        </span>
-                        <span className="text-gray-400 text-sm">
-                            {lessons.length} {lessons.length === 1 ? 'Lesson' : 'Lessons'}
-                        </span>
-                    </div>
-                </div>
-                )}
-
-                {/* Lessons Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                    {lessons.map((lesson: Lesson) => (
-                        <div
-                            key={lesson._id}
-                            onClick={() => {
-                                if (lesson.isUnlocked) {
-                                    router.push(`/lesson/${lesson._id}`);
-                                }
-                            }}
-                            className={`flex flex-col text-left relative overflow-hidden transition-all duration-500 rounded-2xl p-4 bg-white/5 border border-white/10 group
-                                ${lesson.isUnlocked ? 'cursor-pointer hover:scale-105 hover:border-primary hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-primary' : 'opacity-60 grayscale-[0.5] cursor-not-allowed'}`}
-                        >
-                            {/* Icon & Status */}
-                            <div className="flex justify-between items-start mb-4">
-                                <div className={`p-2 rounded-lg ${lesson.isExercise ? 'bg-orange-500/20 text-orange-500' : 'bg-blue-500/20 text-blue-500'}`}>
-                                    {lesson.isExercise ? <PlayCircle size={20} /> : <BookOpen size={20} />}
-                                </div>
-                                <div>
-                                    {lesson.isCompleted && <CheckCircle size={18} className="text-green-500" />}
-                                    {!lesson.isCompleted && !lesson.isUnlocked && <Lock size={18} className="text-gray-500" />}
-                                </div>
-                            </div>
-
-                            {/* Content */}
-                            <div>
-                                <span className="text-[10px] uppercase tracking-widest text-white font-bold mb-1 block">
-                                    Lesson {lesson.order}
-                                </span>
-                                <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                                    <span className='bg-white rounded-md px-2 py-1 text-primary'>
-                                        {lesson.title}
-                                    </span>
-                                </h3>
-                                <p className="text-white text-xs line-clamp-2">
-                                    {lesson.content}
-                                </p>
-                            </div>
-                            <div className="mt-4">
-                                <Button
-                                    disabled={!lesson.isUnlocked}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (lesson.isUnlocked) {
-                                            router.push(`/lesson/${lesson._id}`);
-                                        }
-                                    }}
-                                    className={`w-full flex items-center justify-center gap-2 py-5 font-bold text-lg rounded-xl transition-all ${lesson.isUnlocked
-                                        ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20'
-                                        : 'bg-gray-600 cursor-not-allowed opacity-50'
-                                        }`}
-                                >
-                                    <Play size={20} fill="currentColor" />
-                                    <span>{lesson.isUnlocked ? 'Start Lesson' : 'Locked'}</span>
-                                </Button>
-                            </div>
-
-                            {/* Progress Overlay (Subtle) */}
-                            {lesson.isUnlocked && !lesson.isCompleted && (
-                                <div className="absolute bottom-0 left-0 h-1 bg-primary/30 w-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                {/* Quiz Section */}
-                {moduleData && lessons.length > 0 && lessons.every(lesson => lesson.isUnlocked) && moduleData.quizIds && moduleData.quizIds.length > 0 && (
-                    <div className="mt-16 flex flex-col items-center justify-center p-8 bg-primary/5 border border-primary/20 rounded-3xl backdrop-blur-sm">
-                        <h3 className="text-2xl font-bold mb-2 text-primary uppercase tracking-widest text-center">Module Challenge Unlocked</h3>
-                        <p className="text-gray-300 mb-8 text-center max-w-md">
-                            Congratulations! You&apos;ve unlocked all lessons. Prove your mastery by taking the module quiz.
-                        </p>
-                        {/* <Link href={`/quiz/${moduleData.quizIds[0]}`}> */}
-                        <Link href={`/quiz/${moduleData.quizIds[0]}`}>
-
-                            <Button
-                                onClick={() => console.log("Module Quiz IDs:", moduleData.quizIds)}
-                                className="px-12 py-7 text-xl font-black bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
-                            >
-                                <Play size={24} fill="currentColor" />
-                                <span>Start Quiz</span>
-                            </Button>
-                        </Link>
-                    </div>
-                )}
-
-                {lessons.length === 0 && (
-                    <div className="text-center py-20">
-                        <p className="text-gray-400 text-xl font-medium">No lessons available in this module.</p>
-                    </div>
-                )}
+      <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
+        <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md backdrop-blur-sm">
+          <button
+            onClick={() => router.push("/academy")}
+            className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
+          >
+            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <span>Back</span>
+          </button>
+          {/* Header Section */}
+          {moduleData && (
+            <div className="mb-12">
+              <h2 className="text-4xl text-primary font-bold mb-4">{moduleData.title}</h2>
+              <p className="text-lg text-gray-300 max-w-3xl">
+                {moduleData.description}
+              </p>
+              <div className="mt-6 flex items-center gap-4">
+                <span className="px-4 py-1.5 bg-primary/20 border border-primary/30 rounded-full text-primary text-sm font-semibold">
+                  Module {moduleData.order}
+                </span>
+                <span className="text-gray-400 text-sm">
+                  {lessons.length} {lessons.length === 1 ? 'Lesson' : 'Lessons'}
+                </span>
+              </div>
             </div>
+          )}
+
+          {/* Lessons Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {lessons.map((lesson: Lesson) => (
+              <div
+                key={lesson._id}
+                onClick={() => {
+                  if (lesson.isUnlocked) {
+                    router.push(`/lesson/${lesson._id}`);
+                  }
+                }}
+                className={`flex flex-col text-left relative overflow-hidden transition-all duration-500 rounded-2xl p-4 bg-white/5 border border-white/10 group
+                                ${lesson.isUnlocked ? 'cursor-pointer hover:scale-105 hover:border-primary hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-primary' : 'opacity-60 grayscale-[0.5] cursor-not-allowed'}`}
+              >
+                {/* Icon & Status */}
+                <div className="flex justify-between items-start mb-4">
+                  <div className={`p-2 rounded-lg ${lesson.isExercise ? 'bg-orange-500/20 text-orange-500' : 'bg-blue-500/20 text-blue-500'}`}>
+                    {lesson.isExercise ? <PlayCircle size={20} /> : <BookOpen size={20} />}
+                  </div>
+                  <div>
+                    {lesson.isCompleted && <CheckCircle size={18} className="text-green-500" />}
+                    {!lesson.isCompleted && !lesson.isUnlocked && <Lock size={18} className="text-gray-500" />}
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div>
+                  <span className="text-[10px] uppercase tracking-widest text-white font-bold mb-1 block">
+                    Lesson {lesson.order}
+                  </span>
+                  <h3 className="text-lg font-bold mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                    <span className='bg-white rounded-md px-2 py-1 text-primary'>
+                      {lesson.title}
+                    </span>
+                  </h3>
+                  <p className="text-white text-xs line-clamp-2">
+                    {lesson.content}
+                  </p>
+                </div>
+                <div className="mt-4">
+                  <Button
+                    disabled={!lesson.isUnlocked}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (lesson.isUnlocked) {
+                        router.push(`/lesson/${lesson._id}`);
+                      }
+                    }}
+                    className={`w-full flex items-center justify-center gap-2 py-5 font-bold text-lg rounded-xl transition-all ${lesson.isUnlocked
+                      ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20'
+                      : 'bg-gray-600 cursor-not-allowed opacity-50'
+                      }`}
+                  >
+                    <Play size={20} fill="currentColor" />
+                    <span>{lesson.isUnlocked ? 'Start Lesson' : 'Locked'}</span>
+                  </Button>
+                </div>
+
+                {/* Progress Overlay (Subtle) */}
+                {lesson.isUnlocked && !lesson.isCompleted && (
+                  <div className="absolute bottom-0 left-0 h-1 bg-primary/30 w-full transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* Quiz Section */}
+          {moduleData && lessons.length > 0 && lessons.every(lesson => lesson.isUnlocked) && moduleData.quizIds && moduleData.quizIds.length > 0 && (
+            <div className="mt-16 flex flex-col items-center justify-center p-8 bg-primary/5 border border-primary/20 rounded-3xl backdrop-blur-sm">
+              <h3 className="text-2xl font-bold mb-2 text-primary uppercase tracking-widest text-center">Module Challenge Unlocked</h3>
+              <p className="text-gray-300 mb-8 text-center max-w-md">
+                Congratulations! You&apos;ve unlocked all lessons. Prove your mastery by taking the module quiz.
+              </p>
+              {/* <Link href={`/quiz/${moduleData.quizIds[0]}`}> */}
+              <Link href={`/quiz/${moduleData.quizIds[0]}`}>
+
+                <Button
+                  onClick={() => console.log("Module Quiz IDs:", moduleData.quizIds)}
+                  className="px-12 py-7 text-xl font-black bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(var(--primary-rgb),0.3)] transition-all hover:scale-105 active:scale-95 flex items-center gap-3"
+                >
+                  <Play size={24} fill="currentColor" />
+                  <span>Start Quiz</span>
+                </Button>
+              </Link>
+            </div>
+          )}
+
+          {lessons.length === 0 && (
+            <div className="text-center py-20">
+              <p className="text-gray-400 text-xl font-medium">No lessons available in this module.</p>
+            </div>
+          )}
         </div>
+      </div>
     );
   }
 
@@ -181,7 +181,8 @@ const SingleModule = () => {
     <div className="container mx-auto min-h-screen text-white p-6 md:p-12">
       <div className="bg-black/40 p-6 sm:p-12 md:p-20 rounded-md backdrop-blur-sm">
         <button
-          onClick={() => router.back()}
+          // onClick={() => router.back()}
+          onClick={() => router.push("/module/" + moduleData.instrumentId)}
           className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors mb-8 group"
         >
           <ArrowLeft
@@ -265,11 +266,10 @@ const SingleModule = () => {
                       router.push(`/lesson/${lesson._id}`);
                     }
                   }}
-                  className={`w-full flex items-center justify-center gap-2 py-5 font-bold text-lg rounded-xl transition-all ${
-                    lesson.isUnlocked
-                      ? "bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
-                      : "bg-gray-600 cursor-not-allowed opacity-50"
-                  }`}
+                  className={`w-full flex items-center justify-center gap-2 py-5 font-bold text-lg rounded-xl transition-all ${lesson.isUnlocked
+                    ? "bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                    : "bg-gray-600 cursor-not-allowed opacity-50"
+                    }`}
                 >
                   <Play size={20} fill="currentColor" />
                   <span>{lesson.isUnlocked ? "Start Lesson" : "Locked"}</span>
@@ -297,7 +297,7 @@ const SingleModule = () => {
                 Congratulations! You&apos;ve unlocked all lessons. Prove your
                 mastery by taking the module quiz.
               </p>
-              <Link href="quiz/{moduledata.quizIds}">
+              <Link href={`/quiz/${moduleData.quizIds[0]}`}>
                 <Button
                   onClick={() =>
                     console.log("Module Quiz IDs:", moduleData.quizIds)

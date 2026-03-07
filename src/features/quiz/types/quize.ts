@@ -63,13 +63,37 @@ export interface QuizAttemptsResponse {
 
 export interface IQuizResult {
     quizName: string;
+    quizId: string;
     attemptId: string;
     score: number;
     totalMarks: number;
     percentage: number;
     progressStatus: string;
     timeTaken: number;
-    status: "pass" | "retake_suggested" | "must_retake";
+    status: "pass" | "retake_suggested" | "must_retake" | "fail";
     passingPercentage: number;
     message: string;
+}
+
+export interface IDetailedResult {
+    questionId: string;
+    selectedOption?: string;
+    selectedOptions?: string[];
+    isCorrect: boolean;
+    correctOption?: string;
+    correctOptions?: string[];
+}
+
+export interface IQuizDetailedResult {
+    quizName: string;
+    quizId?: string;
+    attemptId?: string;
+    score: number;
+    totalMarks: number;
+    percentage: number;
+    passingPercentage: number;
+    status: string;
+    timeTaken: number;
+    submittedAt: string;
+    detailedResults: IDetailedResult[];
 }

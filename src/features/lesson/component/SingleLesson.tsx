@@ -161,9 +161,9 @@ const SingleLesson = () => {
 
                 {/* Exercises / Actions */}
                 {lessonData.isExercise && (
-                    <div className="bg-primary/10 border border-primary/20 p-8 rounded-3xl text-center">
+                    <div className="bg-black/10 border border-primary/20 p-8 rounded-3xl text-center">
                         <h2 className="text-2xl font-bold text-primary mb-4">Ready to Practice?</h2>
-                        <p className="text-gray-300 mb-6">This lesson includes exercises to help you master the concepts.</p>
+                        <p className="text-white mb-6">This lesson includes exercises to help you master the concepts.</p>
                         <button
                             onClick={handleStartExercise}
                             className="px-8 py-3 bg-primary cursor-pointer text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-all"
