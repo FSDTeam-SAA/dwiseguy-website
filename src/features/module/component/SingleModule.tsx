@@ -199,13 +199,19 @@ const SingleModule = () => {
           <p className="text-lg text-gray-300 max-w-3xl">
             {moduleData.description}
           </p>
-          <div className="mt-6 flex items-center gap-4">
+          <div className="mt-6 flex flex-wrap items-center gap-4">
             <span className="px-4 py-1.5 bg-primary/20 border border-primary/30 rounded-full text-primary text-sm font-semibold">
               Module {moduleData.order}
             </span>
             <span className="text-gray-400 text-sm">
               {lessons.length} {lessons.length === 1 ? "Lesson" : "Lessons"}
             </span>
+            <Link href={`/module/single/${id}/terms`}>
+              <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/20 rounded-full h-9 font-bold flex items-center gap-2">
+                <BookOpen size={16} />
+                Terms to Know
+              </Button>
+            </Link>
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { useSingleLesson } from "../hooks/useSingleLesson";
 import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { GlossaryText } from "@/lib/glossaryUtils";
 
 const SingleLesson = () => {
     const { id } = useParams();
@@ -82,11 +83,10 @@ const SingleLesson = () => {
                             <h1 className="text-3xl md:text-4xl font-bold mt-1">{lessonData.title}</h1>
                         </div>
                     </div>
-
                     <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 text-lg leading-relaxed">
-                            {lessonData.content}
-                        </p>
+                        <div className="text-gray-300 text-lg leading-relaxed whitespace-pre-wrap">
+                            <GlossaryText text={lessonData.content} />
+                        </div>
                     </div>
 
                     {/* Audio Player if available */}
