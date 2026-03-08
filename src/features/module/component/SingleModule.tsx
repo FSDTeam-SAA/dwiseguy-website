@@ -207,7 +207,7 @@ const SingleModule = () => {
               {lessons.length} {lessons.length === 1 ? "Lesson" : "Lessons"}
             </span>
             <Link href={`/module/single/${id}/terms`}>
-              <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/20 rounded-full h-9 font-bold flex items-center gap-2">
+              <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/20 hover:text-primary animate-pulse rounded-full h-9 font-bold flex items-center gap-2">
                 <BookOpen size={16} />
                 Terms to Know
               </Button>

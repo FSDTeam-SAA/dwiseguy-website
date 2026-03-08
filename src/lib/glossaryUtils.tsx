@@ -31,6 +31,9 @@ export const GlossaryText: React.FC<{ text: string }> = ({ text }) => {
                             key={`term-${matchingTerm.term}-${i}`}
                             term={matchingTerm.term}
                             definition={matchingTerm.definition}
+                            image={matchingTerm.image}
+                            category={matchingTerm.category}
+                            lesson={matchingTerm.lesson}
                         >
                             {part}
                         </GlossaryTooltip>
