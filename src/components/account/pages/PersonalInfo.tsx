@@ -133,6 +133,7 @@ const PersonalInfo = () => {
                             placeholder="maria@untitledui.com"
                             className="bg-white text-black h-12 rounded-[0.5rem] border-none focus-visible:ring-2 focus-visible:ring-primary font-medium"
                             required
+                            disabled
                         />
                     </div>
 
