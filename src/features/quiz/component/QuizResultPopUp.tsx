@@ -11,8 +11,7 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Timer, Target, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Timer, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react";
 
 import { IQuizResult } from "../types/quize";
 
@@ -30,15 +29,17 @@ const QuizResultPopUp = ({ isOpen, onClose, data, errorMessage }: QuizResultPopU
 
     const isPassed = data ? data.percentage >= data.passingPercentage : false;
 
-    const icon = errorMessage ? (
-        <AlertCircle className="w-12 h-12 text-red-500" />
-    ) : isPassed ? (
-        <CheckCircle2 className="w-12 h-12 text-green-500" />
-    ) : (
-        <AlertCircle className="w-12 h-12 text-red-500" />
-    );
+    let icon = <AlertCircle className="w-12 h-12 text-red-500" />;
+    if (!errorMessage && isPassed) {
+        icon = <CheckCircle2 className="w-12 h-12 text-green-500" />;
+    }
 
-    const title = errorMessage ? "Access Denied" : isPassed ? "Congratulations!" : "Keep Practicing!";
+    let title = "Keep Practicing!";
+    if (errorMessage) {
+        title = "Access Denied";
+    } else if (isPassed) {
+        title = "Congratulations!";
+    }
 
     const description = errorMessage || data?.message || (isPassed ? "You've successfully completed this quiz." : "You didn't reach the passing score this time.");
 
@@ -61,9 +62,21 @@ const QuizResultPopUp = ({ isOpen, onClose, data, errorMessage }: QuizResultPopU
 
                 {!errorMessage && data && (
                     <div className="grid grid-cols-2 gap-4 py-6">
+                        <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-2 border-green-500/30">
+                            <CheckCircle2 className="w-5 h-5 text-green-500" />
+                            <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Right Answers</span>
+                            <span className="text-2xl font-bold text-green-500">{data.score}</span>
+                        </div>
+
+                        <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-2 border-red-500/30">
+                            <AlertCircle className="w-5 h-5 text-red-500" />
+                            <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Wrong Answers</span>
+                            <span className="text-2xl font-bold text-red-500">{data.totalMarks - data.score}</span>
+                        </div>
+
                         <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-2">
                             <TrendingUp className="w-5 h-5 text-primary" />
-                            <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Score</span>
+                            <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Percentage</span>
                             <span className="text-2xl font-bold">{data.percentage}%</span>
                         </div>
 
@@ -71,22 +84,6 @@ const QuizResultPopUp = ({ isOpen, onClose, data, errorMessage }: QuizResultPopU
                             <Timer className="w-5 h-5 text-primary" />
                             <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Time taken</span>
                             <span className="text-2xl font-bold">{data.timeTaken}s</span>
-                        </div>
-
-                        <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-2">
-                            <Target className="w-5 h-5 text-primary" />
-                            <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Status</span>
-                            <Badge variant={isPassed ? "default" : "destructive"} className="uppercase">
-                                {data.status.replace("_", " ")}
-                            </Badge>
-                        </div>
-
-                        <div className="bg-white/5 p-4 rounded-xl border border-white/10 flex flex-col items-center justify-center gap-2">
-                            <div className="flex items-center gap-1">
-                                <CheckCircle2 className="w-5 h-5 text-primary" />
-                            </div>
-                            <span className="text-xs text-gray-400 uppercase tracking-wider font-bold">Passing</span>
-                            <span className="text-2xl font-bold">{data.passingPercentage}%</span>
                         </div>
                     </div>
                 )}
@@ -121,7 +118,7 @@ const QuizResultPopUp = ({ isOpen, onClose, data, errorMessage }: QuizResultPopU
 
                             <Button
                                 variant="ghost"
-                                onClick={onClose}
+                                onClick={() => router.push(`/quiz/review/${data?.quizId}`)}
                                 className="text-gray-400 hover:text-white hover:bg-white/5"
                             >
                                 Review Answers

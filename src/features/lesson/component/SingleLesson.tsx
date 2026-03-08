@@ -9,6 +9,7 @@ import { useSingleLesson } from "../hooks/useSingleLesson";
 import { useCompleteLesson } from "../hooks/useCompleteLesson";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { GlossaryText } from "@/lib/glossaryUtils";
 
 const SingleLesson = () => {
     const { id } = useParams();
@@ -82,11 +83,10 @@ const SingleLesson = () => {
                             <h1 className="text-3xl md:text-4xl font-bold mt-1">{lessonData.title}</h1>
                         </div>
                     </div>
-
                     <div className="prose prose-invert max-w-none">
-                        <p className="text-gray-300 text-lg leading-relaxed">
-                            {lessonData.content}
-                        </p>
+                        <div className="text-gray-300 text-lg leading-relaxed whitespace-pre-wrap">
+                            <GlossaryText text={lessonData.content} />
+                        </div>
                     </div>
 
                     {/* Audio Player if available */}
@@ -161,9 +161,9 @@ const SingleLesson = () => {
 
                 {/* Exercises / Actions */}
                 {lessonData.isExercise && (
-                    <div className="bg-primary/10 border border-primary/20 p-8 rounded-3xl text-center">
+                    <div className="bg-black/10 border border-primary/20 p-8 rounded-3xl text-center">
                         <h2 className="text-2xl font-bold text-primary mb-4">Ready to Practice?</h2>
-                        <p className="text-gray-300 mb-6">This lesson includes exercises to help you master the concepts.</p>
+                        <p className="text-white mb-6">This lesson includes exercises to help you master the concepts.</p>
                         <button
                             onClick={handleStartExercise}
                             className="px-8 py-3 bg-primary cursor-pointer text-white font-bold rounded-full hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.5)] transition-all"
