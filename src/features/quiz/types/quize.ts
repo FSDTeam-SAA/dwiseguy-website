@@ -24,6 +24,7 @@ export interface IQuestion {
 
 export interface IQuiz {
     _id: string;
+    moduleId: string;
     title: string;
     description: string;
     questions: IQuestion[];
@@ -64,6 +65,7 @@ export interface QuizAttemptsResponse {
 export interface IQuizResult {
     quizName: string;
     quizId: string;
+    moduleId: string;
     attemptId: string;
     score: number;
     totalMarks: number;
