@@ -83,3 +83,15 @@ export const getStudentQuizMyAttempts = async (accessToken: string) => {
     return response.data;
 };
 
+
+
+// POST method /progress/complete-module (with bearer token and the id of the module in the body)
+
+export const completeModule = async (payload: { moduleId: string }, accessToken: string) => {
+    const response = await api.post(`/progress/complete-module`, payload, {
+        headers: {
+            Authorization: `Bearer ${accessToken}`,
+        },
+    });
+    return response.data;
+};
