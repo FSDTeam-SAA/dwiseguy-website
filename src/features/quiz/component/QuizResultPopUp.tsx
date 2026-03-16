@@ -11,9 +11,10 @@ import {
     DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Timer, TrendingUp, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Timer, TrendingUp, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 
 import { IQuizResult } from "../types/quize";
+import { useModuleComplete } from "../hooks/useModuleComplete";
 
 interface QuizResultPopUpProps {
     isOpen: boolean;
@@ -24,8 +25,23 @@ interface QuizResultPopUpProps {
 
 const QuizResultPopUp = ({ isOpen, onClose, data, errorMessage }: QuizResultPopUpProps) => {
     const router = useRouter();
+    const { mutate: completeModule, isPending: isCompleting } = useModuleComplete();
 
     if (!data && !errorMessage) return null;
+
+    const handleCompleteModule = () => {
+        if (!data?.moduleId) return;
+        completeModule({ moduleId: data.moduleId }, {
+            onSuccess: () => {
+                onClose();
+                router.back();
+            },
+            onError: (error) => {
+                console.error("Failed to complete module:", error);
+                alert("Failed to mark module as completed. Please try again.");
+            }
+        });
+    };
 
     const isPassed = data ? data.percentage >= data.passingPercentage : false;
 
@@ -109,8 +125,26 @@ const QuizResultPopUp = ({ isOpen, onClose, data, errorMessage }: QuizResultPopU
 
                             {isPassed && (
                                 <Button
+                                    onClick={handleCompleteModule}
+                                    disabled={isCompleting}
+                                    className="bg-green-600 hover:bg-green-700 text-white w-full h-12 text-lg font-bold flex items-center justify-center gap-2"
+                                >
+                                    {isCompleting ? (
+                                        <>
+                                            <Loader2 className="w-5 h-5 animate-spin" />
+                                            <span>Completing...</span>
+                                        </>
+                                    ) : (
+                                        "Complete Module"
+                                    )}
+                                </Button>
+                            )}
+
+                            {isPassed && (
+                                <Button
+                                    variant="outline"
                                     onClick={() => router.back()}
-                                    className="bg-primary hover:bg-primary/90 text-white w-full h-12 text-lg font-bold"
+                                    className="border-primary text-primary hover:bg-primary/10 w-full h-12 text-lg font-bold"
                                 >
                                     Back to Module
                                 </Button>
