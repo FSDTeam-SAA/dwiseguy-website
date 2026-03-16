@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { Loader2, AlertCircle, Timer, Send, Lock } from "lucide-react";
 import { useGetStudentQuiz } from "../hooks/useGetStudentQuiz";
 import { useSubmitStudentQuiz } from "../hooks/useSubmitStudentQuiz";
@@ -12,8 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import QuizResultPopUp from "./QuizResultPopUp";
 
-const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: string }) => {
-    const router = useRouter();
+const QuizContent = ({ quizData }: { quizData: IQuiz }) => {
     const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
     const [timeLeft, setTimeLeft] = useState<number>(() => {
         const totalQuestions = quizData.questions.length;
@@ -44,10 +42,11 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
         submitQuiz(payload, {
             onSuccess: (response) => {
                 setHasSubmitted(true);
-                // Ensure quizId is present in resultData for the popup
+                // Ensure quizId and moduleId are present in resultData for the popup
                 const result = {
                     ...response.data,
-                    quizId: quizData._id
+                    quizId: quizData._id,
+                    moduleId: quizData.moduleId
                 };
                 setResultData(result);
                 setIsResultModalOpen(true);
@@ -231,8 +230,6 @@ const QuizContent = ({ quizData, accessToken }: { quizData: IQuiz; accessToken: 
 const QuizPage = () => {
     const { id } = useParams();
     const router = useRouter();
-    const { data: session } = useSession();
-    const accessToken = session?.accessToken || "";
 
     const { data, isLoading, isError, error } = useGetStudentQuiz(id as string);
 
@@ -289,7 +286,7 @@ const QuizPage = () => {
         );
     }
 
-    return <QuizContent key={id as string} quizData={data.data} accessToken={accessToken} />;
+    return <QuizContent key={id as string} quizData={data.data} />;
 };
 
 export default QuizPage;
